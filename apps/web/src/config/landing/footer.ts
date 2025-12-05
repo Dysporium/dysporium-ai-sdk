@@ -57,9 +57,16 @@ export const FOOTER_CONTENT = {
           href: '#features',
         },
         {
+          id: 'documentation',
+          label: 'Documentation',
+          href: 'https://dysporium.mintlify.app/getting-started',
+          external: true,
+        },
+        {
           id: 'examples',
           label: 'Examples',
-          href: '#code',
+          href: 'https://dysporium.mintlify.app/examples/basic-usage',
+          external: true,
         },
         {
           id: 'github',
