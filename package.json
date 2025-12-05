@@ -8,7 +8,11 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "publish:packages": "pnpm build && pnpm -r publish --access public",
+    "version:patch": "pnpm -r exec pnpm version patch",
+    "version:minor": "pnpm -r exec pnpm version minor",
+    "version:major": "pnpm -r exec pnpm version major"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

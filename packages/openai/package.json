@@ -1,6 +1,7 @@
 {
   "name": "@dysporium-sdk/openai",
   "version": "0.1.0",
+  "description": "OpenAI provider for Dysporium SDK",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,6 +18,24 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ai",
+    "sdk",
+    "openai",
+    "gpt",
+    "gpt-4",
+    "chatgpt",
+    "llm"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dysporium/dysporium-sdk.git",
+    "directory": "packages/openai"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@dysporium-sdk/provider": "workspace:*",
