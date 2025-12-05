@@ -1,6 +1,6 @@
 {
   "name": "@dysporium-sdk/openai",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenAI provider for Dysporium SDK",
   "type": "module",
   "main": "./dist/index.js",
@@ -38,6 +38,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@dysporium-sdk/core": "workspace:*",
     "@dysporium-sdk/provider": "workspace:*",
     "zod": "^3.22.4"
   },
