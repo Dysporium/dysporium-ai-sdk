@@ -1,4 +1,12 @@
-import type { LanguageModel, Message } from '@dysporium-sdk/provider';
+import type {
+  LanguageModel,
+  Message,
+  Tool,
+  ToolChoice,
+  ToolCall,
+  ResponseFormat,
+  JsonSchema,
+} from '@dysporium-sdk/provider';
 
 export interface BaseTextOptions {
   model: LanguageModel;
@@ -9,6 +17,13 @@ export interface BaseTextOptions {
   temperature?: number;
   topP?: number;
   stopSequences?: string[];
+  
+  // Tool calling
+  tools?: Tool[];
+  toolChoice?: ToolChoice;
+  
+  // Structured output
+  responseFormat?: ResponseFormat;
 }
 
 export interface Usage {
@@ -21,5 +36,8 @@ export interface BaseTextResult {
   text: string;
   provider: string;
   model: string;
+  toolCalls?: ToolCall[];
 }
 
+// Re-export for convenience
+export type { Tool, ToolChoice, ToolCall, ResponseFormat, JsonSchema };

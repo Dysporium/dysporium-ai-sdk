@@ -1,9 +1,14 @@
-import type { GenerateOptions, GenerateResult } from '@dysporium-sdk/provider';
+import type { GenerateOptions, GenerateResult, ToolCall } from '@dysporium-sdk/provider';
 import { openAIResponseSchema } from '../schemas';
 import type { APIClientConfig } from './api-client';
 import { makeAPICall } from './api-client';
 import type { OpenAIRequest } from './types';
-import { mapMessageToOpenAI } from './types';
+import {
+  mapMessageToOpenAI,
+  mapToolToOpenAI,
+  mapToolChoiceToOpenAI,
+  mapResponseFormatToOpenAI,
+} from './types';
 
 export async function generateText(
   modelId: string,
@@ -20,6 +25,19 @@ export async function generateText(
     stop: options.stopSequences,
     stream: false,
   };
+
+  // Add tools if provided
+  if (options.tools && options.tools.length > 0) {
+    request.tools = options.tools.map(mapToolToOpenAI);
+    if (options.toolChoice) {
+      request.tool_choice = mapToolChoiceToOpenAI(options.toolChoice);
+    }
+  }
+
+  // Add response format if provided
+  if (options.responseFormat) {
+    request.response_format = mapResponseFormatToOpenAI(options.responseFormat);
+  }
 
   const response = await makeAPICall(baseURL, config, request);
   const jsonData = await response.json();
@@ -38,19 +56,28 @@ export async function generateText(
     throw new Error('OpenAI API response contains no choices');
   }
 
-  if (!choice.message.content) {
-    throw new Error('OpenAI API response contains no message content');
+  // Parse tool calls if present
+  let toolCalls: ToolCall[] | undefined;
+  if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
+    toolCalls = choice.message.tool_calls.map(tc => ({
+      id: tc.id,
+      name: tc.function.name,
+      arguments: JSON.parse(tc.function.arguments),
+    }));
   }
 
+  // Determine text output
+  const text = choice.message.content ?? '';
+
   return {
-    text: choice.message.content,
+    text,
     usage: {
       inputTokens: data.usage.prompt_tokens,
       outputTokens: data.usage.completion_tokens,
       totalTokens: data.usage.total_tokens,
     },
     finishReason: choice.finish_reason || 'unknown',
+    toolCalls,
     raw: data,
   };
 }
-

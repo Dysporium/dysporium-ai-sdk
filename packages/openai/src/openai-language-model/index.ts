@@ -22,6 +22,7 @@ export class OpenAILanguageModel implements LanguageModel {
       apiKey: config.apiKey,
       baseURL: this.baseURL,
       organization: config.organization,
+      retry: config.retry,
     };
   }
 
@@ -43,4 +44,3 @@ export class OpenAILanguageModel implements LanguageModel {
     );
   }
 }
-
