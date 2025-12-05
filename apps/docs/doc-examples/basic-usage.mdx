@@ -1,0 +1,69 @@
+---
+title: Basic Usage
+description: Simple examples to get started
+---
+
+## Simple Text Generation
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+import { generateText } from '@dysporium-sdk/core';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Write a haiku about TypeScript',
+});
+
+console.log(result.text);
+```
+
+## Conversational Chat
+
+```typescript
+const messages = [
+  { role: 'system', content: 'You are a helpful assistant.' },
+  { role: 'user', content: 'What is TypeScript?' },
+];
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  messages,
+});
+
+console.log(result.text);
+```
+
+## Streaming Response
+
+```typescript
+import { streamText } from '@dysporium-sdk/core';
+
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Tell a story',
+  onChunk: (chunk) => {
+    if (chunk.type === 'text-delta') {
+      process.stdout.write(chunk.textDelta);
+    }
+  },
+});
+```
+
+## Using the Client
+
+```typescript
+import { DysporiumClient } from '@dysporium-sdk/core';
+
+const client = new DysporiumClient(openai('gpt-4'));
+
+const result = await client.generate({
+  prompt: 'Hello, world!',
+});
+
+console.log(result.text);
+```
+

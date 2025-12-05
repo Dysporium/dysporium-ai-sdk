@@ -1,0 +1,109 @@
+---
+title: Semantic Search
+description: Build a semantic search system with embeddings
+---
+
+Build a semantic search system that finds documents by meaning, not just keywords.
+
+## Complete Implementation
+
+```typescript
+import { embed, embedMany, findSimilar } from '@dysporium-sdk/core';
+import { createOpenAIEmbedding } from '@dysporium-sdk/openai';
+
+const embeddingProvider = createOpenAIEmbedding({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Document type
+interface Document {
+  id: string;
+  text: string;
+  embedding?: number[];
+}
+
+// Index documents
+async function indexDocuments(documents: Document[]): Promise<Document[]> {
+  const texts = documents.map(doc => doc.text);
+  
+  const result = await embedMany({
+    model: embeddingProvider('text-embedding-3-small'),
+    values: texts,
+  });
+
+  return documents.map((doc, i) => ({
+    ...doc,
+    embedding: result.embeddings[i],
+  }));
+}
+
+// Search
+async function search(
+  query: string,
+  indexedDocs: Document[]
+): Promise<Array<{ doc: Document; similarity: number }>> {
+  // Generate query embedding
+  const queryResult = await embed({
+    model: embeddingProvider('text-embedding-3-small'),
+    value: query,
+  });
+
+  // Find similar documents
+  const results = findSimilar(
+    queryResult.embedding,
+    indexedDocs
+      .filter(doc => doc.embedding)
+      .map(doc => ({
+        embedding: doc.embedding!,
+        item: doc,
+      })),
+    { topK: 10, minSimilarity: 0.7 }
+  );
+
+  return results.map(r => ({
+    doc: r.item,
+    similarity: r.similarity,
+  }));
+}
+
+// Usage
+const documents: Document[] = [
+  { id: '1', text: 'TypeScript is a typed superset of JavaScript' },
+  { id: '2', text: 'JavaScript is a dynamic programming language' },
+  { id: '3', text: 'Python is great for data science and machine learning' },
+];
+
+// Index
+const indexed = await indexDocuments(documents);
+
+// Search
+const results = await search('What is TypeScript?', indexed);
+
+results.forEach(({ doc, similarity }) => {
+  console.log(`[${similarity.toFixed(2)}] ${doc.text}`);
+});
+```
+
+## With Vector Database
+
+For production, use a vector database:
+
+```typescript
+// Using a vector database (pseudo-code)
+async function searchWithDB(query: string) {
+  const queryEmbedding = await embed({
+    model: embeddingProvider('text-embedding-3-small'),
+    value: query,
+  });
+
+  // Query vector database
+  const results = await vectorDB.query({
+    vector: queryEmbedding.embedding,
+    topK: 10,
+    minSimilarity: 0.7,
+  });
+
+  return results;
+}
+```
+

@@ -1,0 +1,118 @@
+---
+title: Chatbot
+description: Build a simple chatbot with streaming
+---
+
+Build a chatbot with conversation history and streaming responses.
+
+## Basic Chatbot
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+import { streamText } from '@dysporium-sdk/core';
+import type { Message } from '@dysporium-sdk/core';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const conversationHistory: Message[] = [
+  { role: 'system', content: 'You are a helpful assistant.' },
+];
+
+async function chat(userMessage: string) {
+  // Add user message
+  conversationHistory.push({
+    role: 'user',
+    content: userMessage,
+  });
+
+  // Stream response
+  let fullResponse = '';
+  
+  await streamText({
+    model: openai('gpt-4'),
+    messages: conversationHistory,
+    onChunk: (chunk) => {
+      if (chunk.type === 'text-delta') {
+        fullResponse += chunk.textDelta;
+        // Update UI with fullResponse
+        updateChatUI(fullResponse);
+      }
+    },
+    onFinish: (result) => {
+      // Add assistant response to history
+      conversationHistory.push({
+        role: 'assistant',
+        content: result.text,
+      });
+    },
+  });
+}
+
+// Usage
+await chat('Hello!');
+await chat('What is TypeScript?');
+```
+
+## React Chatbot Component
+
+```typescript
+import { useState } from 'react';
+import { streamText } from '@dysporium-sdk/core';
+import type { Message } from '@dysporium-sdk/core';
+
+function Chatbot() {
+  const [messages, setMessages] = useState<Message[]>([
+    { role: 'system', content: 'You are a helpful assistant.' },
+  ]);
+  const [currentResponse, setCurrentResponse] = useState('');
+
+  async function sendMessage(userMessage: string) {
+    // Add user message
+    const newMessages = [
+      ...messages,
+      { role: 'user' as const, content: userMessage },
+    ];
+    setMessages(newMessages);
+    setCurrentResponse('');
+
+    // Stream response
+    await streamText({
+      model: openai('gpt-4'),
+      messages: newMessages,
+      onChunk: (chunk) => {
+        if (chunk.type === 'text-delta') {
+          setCurrentResponse(prev => prev + chunk.textDelta);
+        }
+      },
+      onFinish: (result) => {
+        setMessages(prev => [
+          ...prev,
+          { role: 'assistant', content: result.text },
+        ]);
+        setCurrentResponse('');
+      },
+    });
+  }
+
+  return (
+    <div>
+      {messages
+        .filter(m => m.role !== 'system')
+        .map((msg, i) => (
+          <div key={i}>
+            <strong>{msg.role}:</strong> {msg.content}
+          </div>
+        ))}
+      {currentResponse && (
+        <div>
+          <strong>assistant:</strong> {currentResponse}
+        </div>
+      )}
+      {/* Input component */}
+    </div>
+  );
+}
+```
+

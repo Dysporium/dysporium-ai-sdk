@@ -1,0 +1,119 @@
+---
+title: AI Agent
+description: Build an AI agent with tool calling
+---
+
+Create an AI agent that can use tools to accomplish tasks.
+
+## Basic Agent
+
+```typescript
+import { DysporiumClient } from '@dysporium-sdk/core';
+import { createOpenAI } from '@dysporium-sdk/openai';
+import type { Tool } from '@dysporium-sdk/core';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Define tools
+const tools: Tool[] = [
+  {
+    type: 'function',
+    name: 'get_weather',
+    description: 'Get current weather for a location',
+    parameters: {
+      type: 'object',
+      properties: {
+        location: { type: 'string' },
+      },
+      required: ['location'],
+    },
+  },
+  {
+    type: 'function',
+    name: 'calculator',
+    description: 'Perform mathematical calculations',
+    parameters: {
+      type: 'object',
+      properties: {
+        expression: { type: 'string' },
+      },
+      required: ['expression'],
+    },
+  },
+];
+
+// Create agent
+const agent = new DysporiumClient(openai('gpt-4'));
+
+async function runAgent(task: string) {
+  const result = await agent.generateWithTools({
+    prompt: task,
+    tools,
+    toolExecutor: async (toolCall) => {
+      switch (toolCall.name) {
+        case 'get_weather':
+          return await getWeatherAPI(toolCall.args.location);
+        case 'calculator':
+          return String(eval(toolCall.args.expression));
+        default:
+          throw new Error(`Unknown tool: ${toolCall.name}`);
+      }
+    },
+    maxIterations: 10,
+  });
+
+  return result.text;
+}
+
+// Usage
+const response = await runAgent(
+  'What is the weather in NYC and calculate 15 * 23?'
+);
+console.log(response);
+```
+
+## Advanced Agent with State
+
+```typescript
+class Agent {
+  private client: DysporiumClient;
+  private tools: Tool[];
+  private memory: Message[] = [];
+
+  constructor(model: LanguageModel, tools: Tool[]) {
+    this.client = new DysporiumClient(model);
+    this.tools = tools;
+  }
+
+  async execute(task: string): Promise<string> {
+    this.memory.push({ role: 'user', content: task });
+
+    const result = await this.client.generateWithTools({
+      messages: this.memory,
+      tools: this.tools,
+      toolExecutor: async (toolCall) => {
+        // Execute tool and return result
+        const result = await this.executeTool(toolCall);
+        this.memory.push({
+          role: 'tool',
+          content: result,
+          toolCallId: toolCall.id,
+        });
+        return result;
+      },
+      maxIterations: 10,
+    });
+
+    this.memory.push({ role: 'assistant', content: result.text });
+    return result.text;
+  }
+
+  private async executeTool(toolCall: ToolCall): Promise<string> {
+    // Tool execution logic
+    return 'Tool result';
+  }
+}
+```
+

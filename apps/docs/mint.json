@@ -58,15 +58,15 @@
     {
       "group": "Examples",
       "pages": [
-        "examples/basic-usage",
-        "examples/chatbot",
-        "examples/agent",
-        "examples/semantic-search"
+        "doc-examples/basic-usage",
+        "doc-examples/chatbot",
+        "doc-examples/agent",
+        "doc-examples/semantic-search"
       ]
     }
   ],
   "footerSocials": {
-    "github": "https://github.com/dysporium/dysporium-sdk"
+    "github": "https://github.com/dysporium/dysporium-ai-sdk"
   }
 }
 
