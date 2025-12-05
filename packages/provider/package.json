@@ -1,25 +1,42 @@
 {
-    "name": "@dysporium-sdk/provider",
-    "version": "0.1.0",
-    "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js"
-      }
-    },
-    "files": [
-      "dist"
-    ],
-    "scripts": {
-      "build": "tsup",
-      "dev": "tsup --watch",
-      "clean": "rm -rf dist"
-    },
-    "devDependencies": {
-      "tsup": "^8.0.0",
-      "typescript": "^5.3.0"
+  "name": "@dysporium-sdk/provider",
+  "version": "0.1.0",
+  "description": "Provider interfaces and types for Dysporium SDK",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ai",
+    "sdk",
+    "provider",
+    "llm",
+    "language-model"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dysporium/dysporium-sdk.git",
+    "directory": "packages/provider"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
   }
+}
