@@ -1,0 +1,111 @@
+---
+title: Core Concepts
+description: Understand the architecture and design of Dysporium SDK
+---
+
+Dysporium SDK is built around a few core concepts that make it powerful and flexible.
+
+## Architecture
+
+The SDK follows a provider-based architecture:
+
+```
+┌─────────────────┐
+│   Your App      │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Core Functions │  (generateText, streamText, embed)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│    Provider     │  (OpenAI, Anthropic, etc.)
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   Language Model│  (gpt-4, claude-3, etc.)
+└─────────────────┘
+```
+
+## Key Concepts
+
+### Providers
+
+Providers are implementations of the SDK's provider interface. They handle authentication, API calls, and model-specific logic.
+
+<CardGroup cols={2}>
+  <Card title="OpenAI Provider" icon="bolt">
+    Full OpenAI API support including GPT-4, embeddings, and more
+  </Card>
+  <Card title="Custom Providers" icon="code">
+    Build your own providers using the provider interface
+  </Card>
+</CardGroup>
+
+### Language Models
+
+Language models are instances created from providers. They represent a specific model (e.g., `gpt-4`, `gpt-3.5-turbo`) and can be used with core functions.
+
+### Core Functions
+
+The SDK provides high-level functions that work with any provider:
+
+- `generateText` - Generate text completions
+- `streamText` - Stream text responses
+- `embed` / `embedMany` - Generate embeddings
+- `DysporiumClient` - Client class for managing models
+
+## Type Safety
+
+Everything is fully typed with TypeScript:
+
+```typescript
+const result: GenerateTextResult = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Hello',
+});
+
+// result.text is typed as string
+// result.usage is typed as Usage
+// result.toolCalls is typed as ToolCall[] | undefined
+```
+
+## Streaming
+
+The SDK is streaming-first. All text generation functions support streaming:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Tell a story',
+  onChunk: (chunk) => {
+    // Handle streaming chunks
+  },
+});
+```
+
+## Error Handling
+
+The SDK includes built-in retry logic and error handling:
+
+```typescript
+try {
+  const result = await generateText({ /* ... */ });
+} catch (error) {
+  if (error instanceof RateLimitError) {
+    // Handle rate limit
+  } else if (error instanceof APIError) {
+    // Handle API error
+  }
+}
+```
+
+## Next Steps
+
+- [Providers](/concepts/providers) - Learn about the provider system
+- [Streaming](/concepts/streaming) - Understand streaming architecture
+- [Tool Calling](/concepts/tool-calling) - Learn about function calling
+

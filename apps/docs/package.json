@@ -1,0 +1,14 @@
+{
+  "name": "dysporium-sdk-docs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "mintlify dev",
+    "build": "mintlify build",
+    "start": "mintlify start"
+  },
+  "devDependencies": {
+    "mintlify": "^3.0.0"
+  }
+}
+

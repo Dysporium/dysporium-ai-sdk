@@ -1,0 +1,121 @@
+---
+title: Providers
+description: Understand the provider system and how to use different AI providers
+---
+
+Providers are the bridge between Dysporium SDK and AI model APIs. They handle authentication, API calls, and model-specific configurations.
+
+## What is a Provider?
+
+A provider is an implementation of the SDK's provider interface. It creates language model instances that can be used with core functions like `generateText` and `streamText`.
+
+## Using Providers
+
+### OpenAI Provider
+
+The OpenAI provider is the default provider included with the SDK:
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Create a model instance
+const model = openai('gpt-4');
+```
+
+### Creating Model Instances
+
+Providers are functions that return model instances:
+
+```typescript
+// Single model
+const gpt4 = openai('gpt-4');
+
+// With options
+const gpt4Turbo = openai('gpt-4-turbo-preview', {
+  temperature: 0.7,
+});
+```
+
+## Provider Configuration
+
+Each provider accepts configuration options:
+
+```typescript
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: 'https://api.openai.com/v1', // Optional: custom base URL
+  defaultHeaders: {
+    'Custom-Header': 'value',
+  },
+});
+```
+
+## Available Providers
+
+<CardGroup cols={2}>
+  <Card title="OpenAI" icon="bolt">
+    Full OpenAI API support including GPT-4, embeddings, and function calling
+  </Card>
+  <Card title="Custom Providers" icon="code">
+    Build your own using the provider interface
+  </Card>
+</CardGroup>
+
+## Using Multiple Providers
+
+You can use multiple providers in the same application:
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+// import { createAnthropic } from '@dysporium-sdk/anthropic'; // Future
+
+const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+// Use different providers for different tasks
+const gpt4 = openai('gpt-4');
+// const claude = anthropic('claude-3-opus');
+```
+
+## Provider Interface
+
+Providers implement a standard interface, making them interchangeable:
+
+```typescript
+type Provider = (modelId: string, options?: ModelOptions) => LanguageModel;
+```
+
+This means you can switch providers without changing your application code:
+
+```typescript
+// Works with any provider
+const result = await generateText({
+  model: openai('gpt-4'), // or anthropic('claude-3'), etc.
+  prompt: 'Hello',
+});
+```
+
+## Embedding Providers
+
+Providers can also create embedding models:
+
+```typescript
+import { createOpenAIEmbedding } from '@dysporium-sdk/openai';
+
+const embeddingProvider = createOpenAIEmbedding({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const embeddingModel = embeddingProvider('text-embedding-3-small');
+```
+
+## Next Steps
+
+- [API Reference: OpenAI](/api-reference/openai) - Full OpenAI provider API
+- [API Reference: Provider](/api-reference/provider) - Provider interface details
+- [Guides: Text Generation](/guides/text-generation) - Using providers in practice
+

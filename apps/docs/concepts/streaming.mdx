@@ -1,0 +1,138 @@
+---
+title: Streaming
+description: Learn how streaming works in Dysporium SDK
+---
+
+Dysporium SDK is built streaming-first. All text generation functions support streaming responses in real-time.
+
+## Why Streaming?
+
+Streaming allows you to:
+- Show responses as they're generated (better UX)
+- Handle long responses without waiting
+- Build real-time chat applications
+- Process tokens as they arrive
+
+## Basic Streaming
+
+Use `streamText` to stream responses:
+
+```typescript
+import { streamText } from '@dysporium-sdk/core';
+import { createOpenAI } from '@dysporium-sdk/openai';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const result = await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Write a long story',
+  onChunk: (chunk) => {
+    if (chunk.type === 'text-delta') {
+      process.stdout.write(chunk.textDelta);
+    }
+  },
+});
+```
+
+## Chunk Types
+
+Streaming chunks can be different types:
+
+<AccordionGroup>
+  <Accordion title="text-delta">
+    New text content from the model
+  </Accordion>
+  <Accordion title="tool-call-delta">
+    Partial tool call arguments (for function calling)
+  </Accordion>
+  <Accordion title="tool-call-complete">
+    Complete tool call ready for execution
+  </Accordion>
+  <Accordion title="finish">
+    Stream completion with final metadata
+  </Accordion>
+</AccordionGroup>
+
+## Handling Chunks
+
+Process different chunk types:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Calculate 2+2',
+  tools: [calculatorTool],
+  onChunk: (chunk) => {
+    switch (chunk.type) {
+      case 'text-delta':
+        // Append text to UI
+        appendToUI(chunk.textDelta);
+        break;
+      case 'tool-call-complete':
+        // Execute tool
+        executeTool(chunk.toolCall);
+        break;
+      case 'finish':
+        // Stream finished
+        console.log('Done:', chunk.finishReason);
+        break;
+    }
+  },
+});
+```
+
+## Callbacks
+
+The SDK provides multiple callbacks for different events:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Hello',
+  onChunk: (chunk) => {
+    // Called for every chunk
+  },
+  onToolCall: (toolCall) => {
+    // Called when a tool call is complete
+  },
+  onFinish: (result) => {
+    // Called when streaming completes
+    console.log('Final text:', result.text);
+    console.log('Usage:', result.usage);
+  },
+});
+```
+
+## Building Chat UIs
+
+Streaming is perfect for chat applications:
+
+```typescript
+async function chat(message: string) {
+  let fullResponse = '';
+
+  await streamText({
+    model: openai('gpt-4'),
+    messages: [
+      ...conversationHistory,
+      { role: 'user', content: message },
+    ],
+    onChunk: (chunk) => {
+      if (chunk.type === 'text-delta') {
+        fullResponse += chunk.textDelta;
+        updateChatUI(fullResponse);
+      }
+    },
+  });
+
+  return fullResponse;
+}
+```
+
+## Next Steps
+
+- [Streaming Guide](/guides/streaming) - Advanced streaming patterns
+- [API Reference: streamText](/api-reference/core#streamtext) - Full API documentation
+

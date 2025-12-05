@@ -1,0 +1,99 @@
+---
+title: Installation
+description: Install and configure Dysporium SDK
+---
+
+## Package Installation
+
+Dysporium SDK is split into multiple packages for modularity:
+
+### Option 1: All-in-One (Recommended)
+
+Install the OpenAI package which includes everything you need:
+
+```bash npm
+npm install @dysporium-sdk/openai
+```
+
+This includes:
+- `@dysporium-sdk/core` - Core functionality
+- `@dysporium-sdk/openai` - OpenAI provider
+- `@dysporium-sdk/provider` - Provider interfaces
+
+### Option 2: Individual Packages
+
+Install packages separately for more control:
+
+```bash npm
+npm install @dysporium-sdk/core @dysporium-sdk/openai
+```
+
+## Package Overview
+
+<CardGroup cols={2}>
+  <Card
+    title="@dysporium-sdk/core"
+    icon="package"
+    href="https://www.npmjs.com/package/@dysporium-sdk/core"
+  >
+    Core functionality: text generation, streaming, embeddings, and utilities
+  </Card>
+  <Card
+    title="@dysporium-sdk/openai"
+    icon="package"
+    href="https://www.npmjs.com/package/@dysporium-sdk/openai"
+  >
+    OpenAI provider implementation with full API support
+  </Card>
+  <Card
+    title="@dysporium-sdk/provider"
+    icon="package"
+    href="https://www.npmjs.com/package/@dysporium-sdk/provider"
+  >
+    Provider interfaces and types for building custom providers
+  </Card>
+</CardGroup>
+
+## Environment Setup
+
+### API Keys
+
+Set your OpenAI API key as an environment variable:
+
+```bash
+export OPENAI_API_KEY=your-api-key-here
+```
+
+Or create a `.env` file:
+
+```env
+OPENAI_API_KEY=your-api-key-here
+```
+
+### TypeScript
+
+The SDK is written in TypeScript and includes full type definitions. No additional types package needed.
+
+### Node.js Version
+
+Requires Node.js 18+ for native async/await and modern JavaScript features.
+
+## Verify Installation
+
+Test your installation:
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+console.log('Dysporium SDK installed successfully!');
+```
+
+## Next Steps
+
+- [Quickstart Guide](/quickstart) - Build your first application
+- [Core Concepts](/concepts/overview) - Learn the fundamentals
+

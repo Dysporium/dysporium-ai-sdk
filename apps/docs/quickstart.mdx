@@ -1,0 +1,108 @@
+---
+title: Quickstart
+description: Build your first AI application with Dysporium SDK
+---
+
+In this guide, you'll build a simple AI application that generates text using OpenAI.
+
+## Step 1: Install and Import
+
+```bash npm
+npm install @dysporium-sdk/openai
+```
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+import { generateText } from '@dysporium-sdk/core';
+```
+
+## Step 2: Create a Provider
+
+Create an OpenAI provider instance:
+
+```typescript
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+```
+
+## Step 3: Generate Text
+
+Use the `generateText` function to create completions:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Write a haiku about TypeScript',
+});
+
+console.log(result.text);
+```
+
+## Complete Example
+
+Here's a complete working example:
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+import { generateText } from '@dysporium-sdk/core';
+
+async function main() {
+  // Create provider
+  const openai = createOpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  // Generate text
+  const result = await generateText({
+    model: openai('gpt-4'),
+    prompt: 'Explain TypeScript in one sentence',
+    maxTokens: 100,
+    temperature: 0.7,
+  });
+
+  console.log('Response:', result.text);
+  console.log('Usage:', result.usage);
+}
+
+main().catch(console.error);
+```
+
+## Using Messages
+
+For conversational AI, use the messages API:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'What is TypeScript?' },
+  ],
+});
+```
+
+## Streaming Responses
+
+Stream responses in real-time:
+
+```typescript
+import { streamText } from '@dysporium-sdk/core';
+
+const result = await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Tell me a story',
+  onChunk: (chunk) => {
+    if (chunk.type === 'text-delta') {
+      process.stdout.write(chunk.textDelta);
+    }
+  },
+});
+```
+
+## Next Steps
+
+- [Text Generation Guide](/guides/text-generation) - Learn advanced text generation
+- [Streaming Guide](/guides/streaming) - Master streaming responses
+- [API Reference](/api-reference/core) - Explore the full API
+

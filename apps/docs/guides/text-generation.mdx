@@ -1,0 +1,134 @@
+---
+title: Text Generation
+description: Complete guide to generating text with Dysporium SDK
+---
+
+Learn how to generate text completions using Dysporium SDK.
+
+## Basic Generation
+
+The simplest way to generate text:
+
+```typescript
+import { generateText } from '@dysporium-sdk/core';
+import { createOpenAI } from '@dysporium-sdk/openai';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Write a haiku about programming',
+});
+
+console.log(result.text);
+```
+
+## Using Messages
+
+For conversational AI, use the messages API:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'What is TypeScript?' },
+  ],
+});
+```
+
+## System Messages
+
+Set a system message to guide model behavior:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  system: 'You are a coding assistant. Always provide code examples.',
+  prompt: 'Explain async/await',
+});
+```
+
+## Parameters
+
+Control generation with parameters:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Write a story',
+  maxTokens: 500,        // Maximum length
+  temperature: 0.7,      // Creativity (0-2)
+  topP: 0.9,            // Nucleus sampling
+  stopSequences: ['END'], // Stop tokens
+});
+```
+
+### Temperature
+
+Controls randomness:
+- `0.0` - Deterministic, focused
+- `0.7` - Balanced (default)
+- `1.0+` - Creative, varied
+
+### Max Tokens
+
+Limit response length. Set based on your use case:
+
+```typescript
+// Short responses
+maxTokens: 50
+
+// Medium responses
+maxTokens: 500
+
+// Long responses
+maxTokens: 2000
+```
+
+## Error Handling
+
+Handle errors gracefully:
+
+```typescript
+import { APIError, RateLimitError } from '@dysporium-sdk/openai';
+
+try {
+  const result = await generateText({
+    model: openai('gpt-4'),
+    prompt: 'Hello',
+  });
+} catch (error) {
+  if (error instanceof RateLimitError) {
+    console.error('Rate limit exceeded. Please wait.');
+  } else if (error instanceof APIError) {
+    console.error('API error:', error.message);
+  } else {
+    console.error('Unknown error:', error);
+  }
+}
+```
+
+## Usage Information
+
+Access token usage:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Hello',
+});
+
+console.log('Input tokens:', result.usage.inputTokens);
+console.log('Output tokens:', result.usage.outputTokens);
+console.log('Total tokens:', result.usage.totalTokens);
+```
+
+## Next Steps
+
+- [Streaming Guide](/guides/streaming) - Stream responses in real-time
+- [Structured Output](/guides/structured-output) - Get JSON responses
+- [Tool Calling](/guides/tool-calling) - Add function calling
+

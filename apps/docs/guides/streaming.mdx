@@ -1,0 +1,152 @@
+---
+title: Streaming
+description: Stream text responses in real-time
+---
+
+Streaming allows you to display responses as they're generated, creating a better user experience.
+
+## Basic Streaming
+
+Use `streamText` to stream responses:
+
+```typescript
+import { streamText } from '@dysporium-sdk/core';
+import { createOpenAI } from '@dysporium-sdk/openai';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const result = await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Write a long story',
+  onChunk: (chunk) => {
+    if (chunk.type === 'text-delta') {
+      process.stdout.write(chunk.textDelta);
+    }
+  },
+});
+```
+
+## Chunk Types
+
+Handle different chunk types:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Hello',
+  onChunk: (chunk) => {
+    switch (chunk.type) {
+      case 'text-delta':
+        // New text content
+        appendText(chunk.textDelta);
+        break;
+      case 'tool-call-delta':
+        // Partial tool call
+        appendToolCall(chunk.argsTextDelta);
+        break;
+      case 'tool-call-complete':
+        // Complete tool call
+        executeTool(chunk.toolCall);
+        break;
+      case 'finish':
+        // Stream finished
+        handleFinish(chunk.finishReason);
+        break;
+    }
+  },
+});
+```
+
+## Building Chat UIs
+
+Stream responses in a chat interface:
+
+```typescript
+let fullResponse = '';
+
+await streamText({
+  model: openai('gpt-4'),
+  messages: conversationHistory,
+  onChunk: (chunk) => {
+    if (chunk.type === 'text-delta') {
+      fullResponse += chunk.textDelta;
+      updateChatBubble(fullResponse);
+    }
+  },
+  onFinish: (result) => {
+    // Save to conversation history
+    conversationHistory.push({
+      role: 'assistant',
+      content: result.text,
+    });
+  },
+});
+```
+
+## Callbacks
+
+Use multiple callbacks for different events:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Calculate 2+2',
+  tools: [calculatorTool],
+  onChunk: (chunk) => {
+    // Called for every chunk
+    console.log('Chunk:', chunk);
+  },
+  onToolCall: (toolCall) => {
+    // Called when tool call is complete
+    console.log('Tool call:', toolCall);
+    executeTool(toolCall);
+  },
+  onFinish: (result) => {
+    // Called when streaming completes
+    console.log('Final result:', result);
+    console.log('Usage:', result.usage);
+  },
+});
+```
+
+## React Example
+
+Stream in a React component:
+
+```typescript
+import { useState } from 'react';
+import { streamText } from '@dysporium-sdk/core';
+
+function ChatComponent() {
+  const [response, setResponse] = useState('');
+
+  async function handleSend(message: string) {
+    setResponse('');
+    
+    await streamText({
+      model: openai('gpt-4'),
+      messages: [{ role: 'user', content: message }],
+      onChunk: (chunk) => {
+        if (chunk.type === 'text-delta') {
+          setResponse(prev => prev + chunk.textDelta);
+        }
+      },
+    });
+  }
+
+  return (
+    <div>
+      <div>{response}</div>
+      {/* Chat UI */}
+    </div>
+  );
+}
+```
+
+## Next Steps
+
+- [Text Generation Guide](/guides/text-generation) - Non-streaming generation
+- [Tool Calling Guide](/guides/tool-calling) - Stream with tool calls
+

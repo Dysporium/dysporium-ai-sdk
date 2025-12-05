@@ -1,0 +1,146 @@
+---
+title: Structured Output
+description: Get structured JSON responses from models
+---
+
+Get reliable, structured JSON responses from language models.
+
+## JSON Mode
+
+Enable JSON mode for structured responses:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Return a JSON object with name and age',
+  responseFormat: {
+    type: 'json_object',
+  },
+});
+
+const data = JSON.parse(result.text);
+console.log(data.name, data.age);
+```
+
+## JSON Schema
+
+Use JSON Schema for more control:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Extract user information from: "John is 30 years old"',
+  responseFormat: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'user_info',
+      schema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          age: { type: 'number' },
+        },
+        required: ['name', 'age'],
+      },
+    },
+  },
+});
+
+const userInfo = JSON.parse(result.text);
+```
+
+## Parsing Helpers
+
+Use the `parseJSON` helper:
+
+```typescript
+import { parseJSON, generateText } from '@dysporium-sdk/core';
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Return JSON with user data',
+  responseFormat: { type: 'json_object' },
+});
+
+try {
+  const data = parseJSON<UserData>(result.text);
+  console.log(data);
+} catch (error) {
+  console.error('Failed to parse JSON:', error);
+}
+```
+
+## Type Safety
+
+Use TypeScript types for type-safe parsing:
+
+```typescript
+interface User {
+  name: string;
+  age: number;
+  email: string;
+}
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Extract user info',
+  responseFormat: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'user',
+      schema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          age: { type: 'number' },
+          email: { type: 'string' },
+        },
+        required: ['name', 'age', 'email'],
+      },
+    },
+  },
+});
+
+const user: User = parseJSON<User>(result.text);
+// user is fully typed!
+```
+
+## Complex Schemas
+
+Define complex nested schemas:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Analyze this text and extract entities',
+  responseFormat: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'analysis',
+      schema: {
+        type: 'object',
+        properties: {
+          entities: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                type: { type: 'string' },
+                confidence: { type: 'number' },
+              },
+            },
+          },
+          sentiment: { type: 'string' },
+        },
+      },
+    },
+  },
+});
+```
+
+## Next Steps
+
+- [Text Generation Guide](/guides/text-generation) - Learn text generation
+- [API Reference](/api-reference/core) - Full API docs
+

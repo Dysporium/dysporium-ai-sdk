@@ -1,0 +1,164 @@
+---
+title: Embeddings
+description: Generate embeddings and build semantic search
+---
+
+Learn how to generate embeddings and use them for semantic search.
+
+## Generating Embeddings
+
+### Single Embedding
+
+```typescript
+import { embed } from '@dysporium-sdk/core';
+import { createOpenAIEmbedding } from '@dysporium-sdk/openai';
+
+const embeddingProvider = createOpenAIEmbedding({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const result = await embed({
+  model: embeddingProvider('text-embedding-3-small'),
+  value: 'Hello, world!',
+});
+
+console.log(result.embedding); // Array of numbers
+```
+
+### Multiple Embeddings
+
+Generate embeddings for multiple texts efficiently:
+
+```typescript
+import { embedMany } from '@dysporium-sdk/core';
+
+const result = await embedMany({
+  model: embeddingProvider('text-embedding-3-small'),
+  values: [
+    'TypeScript is a typed language',
+    'JavaScript is dynamic',
+    'Python is great for data science',
+  ],
+});
+
+// result.embeddings is an array of embedding arrays
+result.embeddings.forEach((embedding, i) => {
+  console.log(`Embedding ${i}:`, embedding);
+});
+```
+
+## Similarity Functions
+
+### Cosine Similarity
+
+Measure similarity between embeddings:
+
+```typescript
+import { cosineSimilarity } from '@dysporium-sdk/core';
+
+const similarity = cosineSimilarity(embedding1, embedding2);
+
+// Returns value between -1 and 1
+// 1 = identical, 0 = unrelated, -1 = opposite
+```
+
+### Euclidean Distance
+
+Calculate distance:
+
+```typescript
+import { euclideanDistance } from '@dysporium-sdk/core';
+
+const distance = euclideanDistance(embedding1, embedding2);
+
+// Lower distance = more similar
+```
+
+## Semantic Search
+
+Find similar documents:
+
+```typescript
+import { findSimilar } from '@dysporium-sdk/core';
+
+// Your indexed documents
+const documents = [
+  { id: 1, text: 'TypeScript guide', embedding: [...] },
+  { id: 2, text: 'JavaScript tutorial', embedding: [...] },
+  { id: 3, text: 'Python basics', embedding: [...] },
+];
+
+// Generate query embedding
+const queryEmbedding = await embed({
+  model: embeddingProvider('text-embedding-3-small'),
+  value: 'What is TypeScript?',
+});
+
+// Find similar documents
+const results = findSimilar(
+  queryEmbedding.embedding,
+  documents.map(doc => ({
+    embedding: doc.embedding,
+    item: doc,
+  })),
+  { topK: 5, minSimilarity: 0.7 }
+);
+
+// results[0].item is the most similar document
+results.forEach(result => {
+  console.log(result.item.text, result.similarity);
+});
+```
+
+## Building a Search System
+
+Complete implementation:
+
+```typescript
+// 1. Index documents
+async function indexDocuments(documents: string[]) {
+  const embeddings = await embedMany({
+    model: embeddingProvider('text-embedding-3-small'),
+    values: documents,
+  });
+
+  return documents.map((text, i) => ({
+    text,
+    embedding: embeddings.embeddings[i],
+  }));
+}
+
+// 2. Search
+async function search(query: string, indexedDocs: IndexedDoc[]) {
+  const queryEmbedding = await embed({
+    model: embeddingProvider('text-embedding-3-small'),
+    value: query,
+  });
+
+  const results = findSimilar(
+    queryEmbedding.embedding,
+    indexedDocs.map(doc => ({
+      embedding: doc.embedding,
+      item: doc,
+    })),
+    { topK: 10, minSimilarity: 0.7 }
+  );
+
+  return results.map(r => r.item);
+}
+
+// Usage
+const indexed = await indexDocuments([
+  'TypeScript is a typed language',
+  'JavaScript is dynamic',
+  'Python is great for data science',
+]);
+
+const results = await search('What is TypeScript?', indexed);
+```
+
+## Next Steps
+
+- [Embeddings Concepts](/concepts/embeddings) - Understand embeddings
+- [Semantic Search Example](/examples/semantic-search) - Complete search app
+

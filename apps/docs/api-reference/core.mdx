@@ -1,0 +1,170 @@
+---
+title: Core API Reference
+description: Complete API reference for @dysporium-sdk/core
+---
+
+<Info>
+  This page is auto-generated from TypeScript source code. The API reference includes all exported functions, classes, and types from the core package.
+</Info>
+
+## Functions
+
+### generateText
+
+Generate text completions from a language model.
+
+```typescript
+function generateText(options: GenerateTextOptions): Promise<GenerateTextResult>
+```
+
+**Parameters:**
+
+- `options.model` - The language model to use
+- `options.prompt` - Single prompt string (or use `messages`)
+- `options.messages` - Array of messages for conversation
+- `options.system` - System message
+- `options.maxTokens` - Maximum tokens to generate
+- `options.temperature` - Sampling temperature (0-2)
+- `options.tools` - Array of tools for function calling
+- `options.toolChoice` - Control tool calling behavior
+- `options.responseFormat` - Structured output format
+
+**Returns:** Promise resolving to `GenerateTextResult`
+
+**Example:**
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Hello, world!',
+  maxTokens: 100,
+});
+```
+
+### streamText
+
+Stream text completions in real-time.
+
+```typescript
+function streamText(options: StreamTextOptions): Promise<StreamTextResult>
+```
+
+**Parameters:**
+
+- All parameters from `generateText`
+- `options.onChunk` - Callback for each chunk
+- `options.onToolCall` - Callback for tool calls
+- `options.onFinish` - Callback when streaming completes
+
+**Returns:** Promise resolving to final `StreamTextResult`
+
+**Example:**
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Tell a story',
+  onChunk: (chunk) => {
+    if (chunk.type === 'text-delta') {
+      console.log(chunk.textDelta);
+    }
+  },
+});
+```
+
+### embed
+
+Generate a single embedding.
+
+```typescript
+function embed(options: EmbedOptions): Promise<EmbedResult>
+```
+
+### embedMany
+
+Generate embeddings for multiple texts.
+
+```typescript
+function embedMany(options: EmbedManyOptions): Promise<EmbedManyResult>
+```
+
+### cosineSimilarity
+
+Calculate cosine similarity between two embeddings.
+
+```typescript
+function cosineSimilarity(a: number[], b: number[]): number
+```
+
+### euclideanDistance
+
+Calculate Euclidean distance between two embeddings.
+
+```typescript
+function euclideanDistance(a: number[], b: number[]): number
+```
+
+### findSimilar
+
+Find similar items using embeddings.
+
+```typescript
+function findSimilar<T>(
+  query: number[],
+  items: Array<{ embedding: number[]; item: T }>,
+  options?: { topK?: number; minSimilarity?: number }
+): Array<{ item: T; similarity: number }>
+```
+
+## Classes
+
+### DysporiumClient
+
+Client class for managing language models and generating text.
+
+```typescript
+class DysporiumClient {
+  constructor(model: LanguageModel)
+  
+  getModel(): LanguageModel
+  setModel(model: LanguageModel): void
+  
+  generate(options: Omit<GenerateTextOptions, 'model'>): Promise<GenerateTextResult>
+  stream(options: Omit<StreamTextOptions, 'model'>): Promise<StreamTextResult>
+  
+  generateWithTools(options: {
+    toolExecutor: (toolCall: ToolCall) => Promise<string>
+    maxIterations?: number
+    // ... other GenerateTextOptions
+  }): Promise<GenerateTextResult>
+  
+  static fromProvider(provider: Provider, modelId: string): DysporiumClient
+}
+```
+
+**Example:**
+
+```typescript
+const client = new DysporiumClient(openai('gpt-4'));
+
+const result = await client.generate({
+  prompt: 'Hello!',
+});
+```
+
+## Types
+
+See the full type definitions in the TypeScript source code. Key types include:
+
+- `GenerateTextOptions` - Options for text generation
+- `GenerateTextResult` - Result from text generation
+- `StreamTextOptions` - Options for streaming
+- `StreamTextResult` - Result from streaming
+- `TextStreamChunk` - Streaming chunk types
+- `EmbedOptions` - Options for embeddings
+- `EmbedResult` - Embedding result
+- `Tool` - Tool definition for function calling
+- `ToolCall` - Tool call from model
+- `Message` - Chat message
+- `Usage` - Token usage information
+

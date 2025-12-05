@@ -1,0 +1,190 @@
+---
+title: Tool Calling
+description: Use function calling to give models access to tools
+---
+
+Tool calling allows models to interact with external functions and APIs.
+
+## Defining Tools
+
+Create tools with JSON schemas:
+
+```typescript
+import { Tool } from '@dysporium-sdk/core';
+
+const calculatorTool: Tool = {
+  type: 'function',
+  name: 'calculator',
+  description: 'Perform mathematical calculations',
+  parameters: {
+    type: 'object',
+    properties: {
+      expression: {
+        type: 'string',
+        description: 'The mathematical expression to evaluate',
+      },
+    },
+    required: ['expression'],
+  },
+};
+```
+
+## Basic Tool Calling
+
+Pass tools to generation functions:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'What is 15 * 23?',
+  tools: [calculatorTool],
+});
+
+if (result.toolCalls && result.toolCalls.length > 0) {
+  for (const toolCall of result.toolCalls) {
+    if (toolCall.name === 'calculator') {
+      const answer = eval(toolCall.args.expression);
+      console.log('Answer:', answer);
+    }
+  }
+}
+```
+
+## Automatic Tool Execution
+
+Use `DysporiumClient.generateWithTools` for automatic execution:
+
+```typescript
+import { DysporiumClient } from '@dysporium-sdk/core';
+
+const client = new DysporiumClient(openai('gpt-4'));
+
+const result = await client.generateWithTools({
+  prompt: 'Calculate 15 * 23, then add 100',
+  tools: [calculatorTool],
+  toolExecutor: async (toolCall) => {
+    if (toolCall.name === 'calculator') {
+      return String(eval(toolCall.args.expression));
+    }
+    throw new Error(`Unknown tool: ${toolCall.name}`);
+  },
+  maxIterations: 10, // Maximum tool call loops
+});
+
+console.log(result.text);
+```
+
+## Streaming Tool Calls
+
+Handle tool calls during streaming:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Calculate 2+2',
+  tools: [calculatorTool],
+  onToolCall: (toolCall) => {
+    // Execute tool immediately
+    const result = executeTool(toolCall);
+    // Note: You'll need to send result back in next request
+  },
+});
+```
+
+## Multiple Tools
+
+Provide multiple tools:
+
+```typescript
+const tools = [
+  {
+    type: 'function',
+    name: 'get_weather',
+    description: 'Get current weather',
+    parameters: {
+      type: 'object',
+      properties: {
+        location: { type: 'string' },
+      },
+      required: ['location'],
+    },
+  },
+  {
+    type: 'function',
+    name: 'calculator',
+    description: 'Perform calculations',
+    parameters: {
+      type: 'object',
+      properties: {
+        expression: { type: 'string' },
+      },
+      required: ['expression'],
+    },
+  },
+];
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'What is the weather in NYC and calculate 2+2?',
+  tools,
+});
+```
+
+## Tool Choice
+
+Control when tools are called:
+
+```typescript
+// Force a specific tool
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Calculate 2+2',
+  tools: [calculatorTool],
+  toolChoice: {
+    type: 'tool',
+    toolName: 'calculator',
+  },
+});
+
+// Disable tool calling
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Hello',
+  tools: [calculatorTool],
+  toolChoice: 'none',
+});
+```
+
+## Building Agents
+
+Create AI agents with tool calling:
+
+```typescript
+async function agent(prompt: string) {
+  const client = new DysporiumClient(openai('gpt-4'));
+  
+  return client.generateWithTools({
+    prompt,
+    tools: [weatherTool, calculatorTool, searchTool],
+    toolExecutor: async (toolCall) => {
+      switch (toolCall.name) {
+        case 'get_weather':
+          return await getWeather(toolCall.args.location);
+        case 'calculator':
+          return String(eval(toolCall.args.expression));
+        case 'search':
+          return await searchWeb(toolCall.args.query);
+        default:
+          throw new Error(`Unknown tool: ${toolCall.name}`);
+      }
+    },
+    maxIterations: 10,
+  });
+}
+```
+
+## Next Steps
+
+- [Tool Calling Concepts](/concepts/tool-calling) - Understand the architecture
+- [Agent Example](/examples/agent) - Complete agent implementation
+

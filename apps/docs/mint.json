@@ -1,0 +1,72 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Dysporium SDK",
+  "favicon": "favicon.svg",
+  "colors": {
+    "primary": "#3B82F6",
+    "light": "#60A5FA",
+    "dark": "#2563EB"
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/dysporium/dysporium-ai-sdk"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "/getting-started"
+  },
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": [
+        "getting-started",
+        "installation",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "Core Concepts",
+      "pages": [
+        "concepts/overview",
+        "concepts/providers",
+        "concepts/streaming",
+        "concepts/tool-calling",
+        "concepts/embeddings"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/core",
+        "api-reference/openai",
+        "api-reference/provider"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/text-generation",
+        "guides/streaming",
+        "guides/tool-calling",
+        "guides/embeddings",
+        "guides/structured-output",
+        "guides/error-handling"
+      ]
+    },
+    {
+      "group": "Examples",
+      "pages": [
+        "examples/basic-usage",
+        "examples/chatbot",
+        "examples/agent",
+        "examples/semantic-search"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/dysporium/dysporium-sdk"
+  }
+}
+

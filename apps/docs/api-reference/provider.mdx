@@ -1,0 +1,159 @@
+---
+title: Provider API Reference
+description: Complete API reference for @dysporium-sdk/provider
+---
+
+<Info>
+  This page is auto-generated from TypeScript source code. The provider package defines interfaces for building custom providers.
+</Info>
+
+## Interfaces
+
+### Provider
+
+Function type for creating language models:
+
+```typescript
+type Provider = (modelId: string, options?: ModelOptions) => LanguageModel
+```
+
+### EmbeddingProvider
+
+Function type for creating embedding models:
+
+```typescript
+type EmbeddingProvider = (modelId: string, options?: ModelOptions) => EmbeddingModel
+```
+
+## Core Types
+
+### LanguageModel
+
+Interface that language models must implement:
+
+```typescript
+interface LanguageModel {
+  provider: string
+  modelId: string
+  
+  doGenerate(options: GenerateOptions): Promise<GenerateResult>
+  doStream(options: GenerateOptions): AsyncIterable<StreamChunk>
+}
+```
+
+### EmbeddingModel
+
+Interface that embedding models must implement:
+
+```typescript
+interface EmbeddingModel {
+  provider: string
+  modelId: string
+  
+  doEmbed(options: EmbedOptions): Promise<EmbedResult>
+}
+```
+
+## Message Types
+
+### Message
+
+Chat message interface:
+
+```typescript
+interface Message {
+  role: 'system' | 'user' | 'assistant' | 'tool'
+  content: string
+  toolCallId?: string
+}
+```
+
+## Tool Types
+
+### Tool
+
+Tool definition for function calling:
+
+```typescript
+interface Tool {
+  type: 'function'
+  name: string
+  description: string
+  parameters: JsonSchema
+}
+```
+
+### ToolCall
+
+Tool call from the model:
+
+```typescript
+interface ToolCall {
+  id: string
+  name: string
+  args: Record<string, unknown>
+}
+```
+
+### ToolChoice
+
+Control tool calling behavior:
+
+```typescript
+type ToolChoice =
+  | 'auto'
+  | 'none'
+  | { type: 'tool'; toolName: string }
+```
+
+## Configuration
+
+### RetryConfig
+
+Retry configuration:
+
+```typescript
+interface RetryConfig {
+  maxRetries?: number
+  initialDelay?: number
+  maxDelay?: number
+  // ...
+}
+```
+
+### DEFAULT_RETRY_CONFIG
+
+Default retry configuration:
+
+```typescript
+export const DEFAULT_RETRY_CONFIG: RetryConfig
+```
+
+## Building Custom Providers
+
+To build a custom provider, implement the `Provider` or `EmbeddingProvider` interface:
+
+```typescript
+import type { Provider, LanguageModel } from '@dysporium-sdk/provider';
+
+function createCustomProvider(config: CustomConfig): Provider {
+  return (modelId: string) => {
+    return {
+      provider: 'custom',
+      modelId,
+      async doGenerate(options) {
+        // Implement generation logic
+      },
+      async *doStream(options) {
+        // Implement streaming logic
+      },
+    };
+  };
+}
+```
+
+## Next Steps
+
+- [Core API Reference](/api-reference/core) - Core functions that use providers
+- [OpenAI Provider](/api-reference/openai) - Example provider implementation
+

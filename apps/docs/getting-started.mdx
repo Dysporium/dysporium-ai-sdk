@@ -1,0 +1,59 @@
+---
+title: Getting Started
+description: Get up and running with Dysporium SDK in minutes
+---
+
+The Dysporium SDK is a modern TypeScript SDK for building AI applications. It's type-safe, streaming-first, and designed for production scale.
+
+## What is Dysporium SDK?
+
+Dysporium SDK provides a unified interface for working with AI language models and embeddings. It's built with TypeScript from the ground up, offering:
+
+- **Type Safety**: Full TypeScript support with end-to-end type inference
+- **Streaming First**: Built-in support for streaming responses
+- **Provider Agnostic**: Modular provider system starting with OpenAI
+- **Production Ready**: Designed for scale with retry logic, error handling, and more
+
+## Quick Install
+
+Install the OpenAI provider package (which includes core):
+
+```bash
+npm install @dysporium-sdk/openai
+```
+
+Or install packages individually:
+
+```bash
+npm install @dysporium-sdk/core @dysporium-sdk/openai
+```
+
+## Your First Request
+
+Here's a simple example to get you started:
+
+```typescript
+import { createOpenAI } from '@dysporium-sdk/openai';
+import { generateText } from '@dysporium-sdk/core';
+
+// Create an OpenAI provider
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Generate text
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Hello, world!',
+});
+
+console.log(result.text);
+```
+
+## Next Steps
+
+- [Installation Guide](/installation) - Detailed installation instructions
+- [Quickstart Tutorial](/quickstart) - Build your first AI application
+- [Core Concepts](/concepts/overview) - Understand the SDK architecture
+- [API Reference](/api-reference/core) - Explore the full API
+

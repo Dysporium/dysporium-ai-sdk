@@ -1,0 +1,147 @@
+---
+title: Tool Calling
+description: Use function calling to give models access to tools and APIs
+---
+
+Tool calling (also known as function calling) allows language models to interact with external tools and APIs by calling functions you define.
+
+## What is Tool Calling?
+
+Tool calling lets models:
+- Call functions you define
+- Access external APIs
+- Perform calculations
+- Query databases
+- Execute any code you provide
+
+## Defining Tools
+
+Tools are functions with schemas:
+
+```typescript
+import { Tool } from '@dysporium-sdk/core';
+
+const calculatorTool: Tool = {
+  type: 'function',
+  name: 'calculator',
+  description: 'Perform mathematical calculations',
+  parameters: {
+    type: 'object',
+    properties: {
+      expression: {
+        type: 'string',
+        description: 'The mathematical expression to evaluate',
+      },
+    },
+    required: ['expression'],
+  },
+};
+```
+
+## Using Tools
+
+Pass tools to `generateText` or `streamText`:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'What is 15 * 23?',
+  tools: [calculatorTool],
+});
+
+// Check if model called a tool
+if (result.toolCalls && result.toolCalls.length > 0) {
+  for (const toolCall of result.toolCalls) {
+    if (toolCall.name === 'calculator') {
+      const result = eval(toolCall.args.expression);
+      // Send result back to model
+    }
+  }
+}
+```
+
+## Tool Execution Loop
+
+The `DysporiumClient` provides a helper for automatic tool execution:
+
+```typescript
+import { DysporiumClient } from '@dysporium-sdk/core';
+
+const client = new DysporiumClient(openai('gpt-4'));
+
+const result = await client.generateWithTools({
+  prompt: 'Calculate 15 * 23, then add 100',
+  tools: [calculatorTool],
+  toolExecutor: async (toolCall) => {
+    if (toolCall.name === 'calculator') {
+      return String(eval(toolCall.args.expression));
+    }
+    throw new Error(`Unknown tool: ${toolCall.name}`);
+  },
+});
+```
+
+## Streaming Tool Calls
+
+Handle tool calls during streaming:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Calculate 2+2',
+  tools: [calculatorTool],
+  onToolCall: (toolCall) => {
+    // Tool call is complete, execute it
+    executeTool(toolCall);
+  },
+});
+```
+
+## Tool Choice
+
+Control when tools are called:
+
+```typescript
+// Force a specific tool
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Calculate 2+2',
+  tools: [calculatorTool],
+  toolChoice: {
+    type: 'tool',
+    toolName: 'calculator',
+  },
+});
+
+// Disable tool calling
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Hello',
+  tools: [calculatorTool],
+  toolChoice: 'none',
+});
+```
+
+## Multiple Tools
+
+Provide multiple tools:
+
+```typescript
+const tools = [
+  calculatorTool,
+  weatherTool,
+  databaseQueryTool,
+];
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'What is the weather and calculate 2+2?',
+  tools,
+});
+```
+
+## Next Steps
+
+- [Tool Calling Guide](/guides/tool-calling) - Advanced tool calling patterns
+- [API Reference](/api-reference/core#tool) - Tool schema reference
+

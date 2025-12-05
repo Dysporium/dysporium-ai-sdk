@@ -1,0 +1,177 @@
+---
+title: OpenAI API Reference
+description: Complete API reference for @dysporium-sdk/openai
+---
+
+<Info>
+  This page is auto-generated from TypeScript source code. The OpenAI package provides the OpenAI provider implementation.
+</Info>
+
+## Provider Functions
+
+### createOpenAI
+
+Create an OpenAI language model provider.
+
+```typescript
+function createOpenAI(config: OpenAIConfig): OpenAIProvider
+```
+
+**Parameters:**
+
+- `config.apiKey` - Your OpenAI API key (required)
+- `config.baseURL` - Custom base URL (optional)
+- `config.defaultHeaders` - Custom headers (optional)
+
+**Returns:** `OpenAIProvider` function
+
+**Example:**
+
+```typescript
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const model = openai('gpt-4');
+```
+
+### createOpenAIEmbedding
+
+Create an OpenAI embedding provider.
+
+```typescript
+function createOpenAIEmbedding(config: OpenAIConfig): EmbeddingProvider
+```
+
+**Example:**
+
+```typescript
+const embeddingProvider = createOpenAIEmbedding({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const model = embeddingProvider('text-embedding-3-small');
+```
+
+## Available Models
+
+### Language Models
+
+- `gpt-4` - GPT-4
+- `gpt-4-turbo-preview` - GPT-4 Turbo
+- `gpt-3.5-turbo` - GPT-3.5 Turbo
+- And more...
+
+### Embedding Models
+
+- `text-embedding-3-small` - Small, fast embeddings
+- `text-embedding-3-large` - Large, high-quality embeddings
+- `text-embedding-ada-002` - Legacy model
+
+## Model Constants
+
+### openaiModels
+
+Array of available OpenAI language models:
+
+```typescript
+import { openaiModels } from '@dysporium-sdk/openai';
+
+console.log(openaiModels); // ['gpt-4', 'gpt-4-turbo-preview', ...]
+```
+
+### openaiEmbeddingModels
+
+Array of available OpenAI embedding models:
+
+```typescript
+import { openaiEmbeddingModels } from '@dysporium-sdk/openai';
+
+console.log(openaiEmbeddingModels); // ['text-embedding-3-small', ...]
+```
+
+## Error Classes
+
+### APIError
+
+Base error class for OpenAI API errors.
+
+```typescript
+class APIError extends Error {
+  statusCode: number
+  // ...
+}
+```
+
+### RateLimitError
+
+Error thrown when rate limit is exceeded.
+
+```typescript
+class RateLimitError extends APIError {
+  // ...
+}
+```
+
+**Example:**
+
+```typescript
+import { RateLimitError, APIError } from '@dysporium-sdk/openai';
+
+try {
+  const result = await generateText({ /* ... */ });
+} catch (error) {
+  if (error instanceof RateLimitError) {
+    console.log('Rate limit exceeded');
+  } else if (error instanceof APIError) {
+    console.log('API error:', error.statusCode);
+  }
+}
+```
+
+## Types
+
+### OpenAIConfig
+
+Configuration for OpenAI provider:
+
+```typescript
+interface OpenAIConfig {
+  apiKey: string
+  baseURL?: string
+  defaultHeaders?: Record<string, string>
+}
+```
+
+### OpenAIModel
+
+Type for OpenAI model IDs:
+
+```typescript
+type OpenAIModel = 'gpt-4' | 'gpt-4-turbo-preview' | 'gpt-3.5-turbo' | ...
+```
+
+### OpenAIEmbeddingModelId
+
+Type for OpenAI embedding model IDs:
+
+```typescript
+type OpenAIEmbeddingModelId = 'text-embedding-3-small' | 'text-embedding-3-large' | ...
+```
+
+## Re-exports
+
+The OpenAI package re-exports everything from `@dysporium-sdk/core` for convenience:
+
+```typescript
+import {
+  generateText,
+  streamText,
+  embed,
+  DysporiumClient,
+  // ... all core exports
+} from '@dysporium-sdk/openai';
+```
+
+This means you can install just `@dysporium-sdk/openai` and get everything you need.
+

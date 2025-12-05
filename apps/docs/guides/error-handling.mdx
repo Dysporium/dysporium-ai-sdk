@@ -1,0 +1,117 @@
+---
+title: Error Handling
+description: Handle errors and retries in Dysporium SDK
+---
+
+Learn how to handle errors and implement retry logic.
+
+## Error Types
+
+The SDK provides specific error types:
+
+```typescript
+import { APIError, RateLimitError } from '@dysporium-sdk/openai';
+
+try {
+  const result = await generateText({
+    model: openai('gpt-4'),
+    prompt: 'Hello',
+  });
+} catch (error) {
+  if (error instanceof RateLimitError) {
+    console.error('Rate limit exceeded');
+  } else if (error instanceof APIError) {
+    console.error('API error:', error.statusCode, error.message);
+  } else {
+    console.error('Unknown error:', error);
+  }
+}
+```
+
+## Rate Limit Errors
+
+Handle rate limits gracefully:
+
+```typescript
+import { RateLimitError } from '@dysporium-sdk/openai';
+
+async function generateWithRetry(prompt: string) {
+  try {
+    return await generateText({
+      model: openai('gpt-4'),
+      prompt,
+    });
+  } catch (error) {
+    if (error instanceof RateLimitError) {
+      // Wait and retry
+      await new Promise(resolve => setTimeout(resolve, 60000));
+      return generateWithRetry(prompt);
+    }
+    throw error;
+  }
+}
+```
+
+## Built-in Retry Logic
+
+Providers include built-in retry logic:
+
+```typescript
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  // Retry configuration is handled automatically
+});
+```
+
+## Custom Error Handling
+
+Implement custom error handling:
+
+```typescript
+async function safeGenerate(prompt: string) {
+  try {
+    const result = await generateText({
+      model: openai('gpt-4'),
+      prompt,
+    });
+    return { success: true, data: result };
+  } catch (error) {
+    if (error instanceof RateLimitError) {
+      return { success: false, error: 'RATE_LIMIT' };
+    } else if (error instanceof APIError) {
+      return { success: false, error: 'API_ERROR', statusCode: error.statusCode };
+    } else {
+      return { success: false, error: 'UNKNOWN' };
+    }
+  }
+}
+```
+
+## Validation Errors
+
+Validate inputs before sending:
+
+```typescript
+function validatePrompt(prompt: string): void {
+  if (!prompt || prompt.trim().length === 0) {
+    throw new Error('Prompt cannot be empty');
+  }
+  if (prompt.length > 10000) {
+    throw new Error('Prompt too long');
+  }
+}
+
+async function generate(prompt: string) {
+  validatePrompt(prompt);
+  return await generateText({
+    model: openai('gpt-4'),
+    prompt,
+  });
+}
+```
+
+## Next Steps
+
+- [Text Generation Guide](/guides/text-generation) - Learn generation
+- [API Reference](/api-reference/openai) - Error class details
+
