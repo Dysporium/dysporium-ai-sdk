@@ -8,7 +8,7 @@ export interface CTAButton {
 
 export const HERO_CONTENT = {
   badge: {
-    text: 'Now in Public Beta',
+    text: 'v0.1.0 Released',
     show: true,
   },
   heading: {
@@ -17,22 +17,22 @@ export const HERO_CONTENT = {
     highlight: 'Production Scale',
   },
   description:
-    'The modern TypeScript SDK for building AI applications. Type-safe, streaming-first, and designed for teams who ship fast.',
-  installCommand: 'npm install @dysporium/sdk',
+    'The modern TypeScript SDK for building AI applications. Type-safe, streaming-first, with OpenAI support out of the box.',
+  installCommand: 'npm install @dysporium-sdk/openai',
   ctaButtons: [
     {
       id: 'start-building',
       label: 'Start Building',
-      href: '#',
+      href: '#code',
       variant: 'primary' as const,
       icon: 'ArrowRight',
     },
     {
-      id: 'view-examples',
-      label: 'View Examples',
-      href: '#code',
+      id: 'view-npm',
+      label: 'View on npm',
+      href: 'https://www.npmjs.com/package/@dysporium-sdk/core',
       variant: 'secondary' as const,
-      icon: 'Terminal',
+      icon: 'ExternalLink',
     },
   ] as Array<CTAButton>,
 } as const

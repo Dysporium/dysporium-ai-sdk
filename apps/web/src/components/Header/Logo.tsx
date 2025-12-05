@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { cn } from '../../utils/cn'
-import { HEADER_CONFIG } from './constants'
+import { HEADER_CONFIG } from '../../constants/constants'
 
 interface LogoProps {
   className?: string

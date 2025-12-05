@@ -1,6 +1,6 @@
-import { NAV_ITEMS } from './navConfig'
+import { NAV_ITEMS } from '../../config/navConfig'
 import { NavLink } from './NavLink'
-import { HEADER_CLASSES } from './constants'
+import { HEADER_CLASSES } from '../../constants/constants'
 
 export function DesktopNav() {
   return (

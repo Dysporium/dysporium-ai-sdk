@@ -1,5 +1,5 @@
 import { Menu } from 'lucide-react'
-import { HEADER_CLASSES } from './constants'
+import { HEADER_CLASSES } from '../../constants/constants'
 
 interface MobileMenuButtonProps {
   onClick: () => void

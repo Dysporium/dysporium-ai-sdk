@@ -1,5 +1,5 @@
 import { cn } from '../../utils/cn'
-import type { NavItem } from './navConfig'
+import type { NavItem } from '../../config/navConfig'
 
 interface NavLinkProps {
   item: NavItem

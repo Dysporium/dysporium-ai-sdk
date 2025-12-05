@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { HEADER_CONFIG } from './constants'
+import { HEADER_CONFIG } from '../../constants/constants'
 
 export function useScrollEffect() {
   const [isScrolled, setIsScrolled] = useState(false)

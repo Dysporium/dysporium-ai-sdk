@@ -5,7 +5,7 @@ import { Logo } from './Logo'
 import { DesktopNav } from './DesktopNav'
 import { MobileMenuButton } from './MobileMenuButton'
 import { MobileNav } from './MobileNav'
-import { HEADER_CLASSES } from './constants'
+import { HEADER_CLASSES } from '../../constants/constants'
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)

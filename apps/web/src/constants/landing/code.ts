@@ -15,24 +15,12 @@ export const CODE_CLASSES = {
     container: 'relative',
     glow: 'absolute -inset-4 bg-gradient-to-r from-[#ff6b00]/20 to-transparent blur-xl opacity-50',
     wrapper: 'relative bg-[#141414] border border-[#2e2e2e] rounded-xl overflow-hidden',
-    header: 'flex items-center gap-2 px-4 py-3 border-b border-[#2e2e2e]',
-    controls: {
-      red: 'w-3 h-3 rounded-full bg-[#ff5f56]',
-      yellow: 'w-3 h-3 rounded-full bg-[#ffbd2e]',
-      green: 'w-3 h-3 rounded-full bg-[#27ca40]',
-    },
-    filename: 'ml-4 text-xs text-[#9a9a9a] font-mono',
+    header: 'flex items-center px-4 py-3 border-b border-[#2e2e2e]',
+    filename: 'text-xs text-[#9a9a9a] font-mono',
     pre: 'p-6 overflow-x-auto',
     code: 'text-sm font-mono leading-relaxed',
     line: 'flex',
     lineNumber: 'w-8 text-[#404040] select-none text-right mr-4',
   },
-} as const
-
-export const CODE_HIGHLIGHT_COLORS = {
-  keyword: 'text-[#ff6b00]',
-  string: 'text-[#7ec699]',
-  comment: 'text-[#6a6a6a]',
-  variable: 'text-[#79c0ff]',
 } as const
 

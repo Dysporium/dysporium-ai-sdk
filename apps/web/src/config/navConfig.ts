@@ -23,7 +23,7 @@ export const NAV_ITEMS: Array<NavItem> = [
   {
     id: 'github',
     label: 'GitHub',
-    href: 'https://github.com',
+    href: 'https://github.com/Dysporium/dysporium-ai-sdk',
     type: 'external',
     icon: Github,
     external: true,
@@ -49,12 +49,6 @@ export const MOBILE_NAV_ITEMS: Array<NavItem> = [
     id: 'code',
     label: 'Code',
     href: '#code',
-    type: 'link',
-  },
-  {
-    id: 'pricing',
-    label: 'Pricing',
-    href: '#pricing',
     type: 'link',
   },
 ]

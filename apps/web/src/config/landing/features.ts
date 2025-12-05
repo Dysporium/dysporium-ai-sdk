@@ -1,4 +1,4 @@
-import { Cpu, Layers, Shield, Sparkles, Workflow, Zap } from 'lucide-react'
+import { Cpu, Layers, Shield, Database, Workflow, Zap } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 export interface Feature {
@@ -17,7 +17,7 @@ export const FEATURES_CONTENT = {
       highlight: 'build with AI',
     },
     description:
-      'A complete toolkit for modern AI development. From simple completions to complex multi-agent systems.',
+      'A complete toolkit for modern AI development. From simple completions to complex agentic workflows.',
   },
   features: [
     {
@@ -25,7 +25,7 @@ export const FEATURES_CONTENT = {
       icon: Zap,
       title: 'Streaming First',
       description:
-        'Built-in support for streaming responses. Perfect for chatbots, real-time AI, and interactive applications.',
+        'Built-in support for streaming responses with chunk callbacks. Perfect for chatbots and real-time AI.',
     },
     {
       id: 'type-safe',
@@ -37,30 +37,30 @@ export const FEATURES_CONTENT = {
     {
       id: 'provider-agnostic',
       icon: Layers,
-      title: 'Provider Agnostic',
+      title: 'Provider Architecture',
       description:
-        'Switch between OpenAI, Anthropic, Google, and more with a single line change.',
+        'Modular provider system starting with OpenAI. Add new providers without changing your code.',
     },
     {
-      id: 'edge-ready',
-      icon: Cpu,
-      title: 'Edge Ready',
+      id: 'embeddings',
+      icon: Database,
+      title: 'Embeddings & Search',
       description:
-        'Optimized for serverless and edge environments. Deploy anywhere JavaScript runs.',
+        'Generate embeddings, compute similarity, and build semantic search with built-in utilities.',
     },
     {
-      id: 'built-in-tools',
+      id: 'tool-calling',
       icon: Workflow,
-      title: 'Built-in Tools',
+      title: 'Tool Calling',
       description:
-        'First-class support for function calling and tool use. Build agents that take action.',
+        'First-class support for function calling with automatic tool execution loops.',
     },
     {
-      id: 'smart-caching',
-      icon: Sparkles,
-      title: 'Smart Caching',
+      id: 'structured-output',
+      icon: Cpu,
+      title: 'Structured Output',
       description:
-        'Intelligent response caching reduces costs and latency. Save up to 80% on API calls.',
+        'JSON mode and JSON Schema support for reliable, structured responses from LLMs.',
     },
   ] as Array<Feature>,
 } as const

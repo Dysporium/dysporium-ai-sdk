@@ -2,6 +2,7 @@ export interface FooterLink {
   id: string
   label: string
   href: string
+  external?: boolean
 }
 
 export interface FooterLinkGroup {
@@ -23,8 +24,32 @@ export const FOOTER_CONTENT = {
   },
   linkGroups: [
     {
-      id: 'product',
-      title: 'Product',
+      id: 'packages',
+      title: 'Packages',
+      links: [
+        {
+          id: 'core',
+          label: '@dysporium-sdk/core',
+          href: 'https://www.npmjs.com/package/@dysporium-sdk/core',
+          external: true,
+        },
+        {
+          id: 'openai',
+          label: '@dysporium-sdk/openai',
+          href: 'https://www.npmjs.com/package/@dysporium-sdk/openai',
+          external: true,
+        },
+        {
+          id: 'provider',
+          label: '@dysporium-sdk/provider',
+          href: 'https://www.npmjs.com/package/@dysporium-sdk/provider',
+          external: true,
+        },
+      ],
+    },
+    {
+      id: 'resources',
+      title: 'Resources',
       links: [
         {
           id: 'features',
@@ -32,14 +57,15 @@ export const FOOTER_CONTENT = {
           href: '#features',
         },
         {
-          id: 'documentation',
-          label: 'Documentation',
-          href: '#',
+          id: 'examples',
+          label: 'Examples',
+          href: '#code',
         },
         {
-          id: 'changelog',
-          label: 'Changelog',
-          href: '#',
+          id: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/dysporium/dysporium-sdk',
+          external: true,
         },
       ],
     },

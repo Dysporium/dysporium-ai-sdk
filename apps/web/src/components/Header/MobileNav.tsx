@@ -1,8 +1,8 @@
 import { X } from 'lucide-react'
 import { cn } from '../../utils/cn'
-import { MOBILE_NAV_ITEMS, NAV_ITEMS } from './navConfig'
+import { MOBILE_NAV_ITEMS, NAV_ITEMS } from '../../config/navConfig'
 import { NavLink } from './NavLink'
-import { HEADER_CLASSES } from './constants'
+import { HEADER_CLASSES } from '../../constants/constants'
 
 interface MobileNavProps {
   isOpen: boolean
