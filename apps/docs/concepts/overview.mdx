@@ -26,7 +26,7 @@ The SDK follows a provider-based architecture:
          │
          ▼
 ┌─────────────────┐
-│   Language Model│  (gpt-4, claude-3, etc.)
+│   Language Model│  (gpt-5.1, claude-3, etc.)
 └─────────────────┘
 ```
 
@@ -47,7 +47,7 @@ Providers are implementations of the SDK's provider interface. They handle authe
 
 ### Language Models
 
-Language models are instances created from providers. They represent a specific model (e.g., `gpt-4`, `gpt-3.5-turbo`) and can be used with core functions.
+Language models are instances created from providers. They represent a specific model (e.g., `gpt-5.1`, `gpt-4o`) and can be used with core functions.
 
 ### Core Functions
 
@@ -64,7 +64,7 @@ Everything is fully typed with TypeScript:
 
 ```typescript
 const result: GenerateTextResult = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Hello',
 });
 
@@ -79,7 +79,7 @@ The SDK is streaming-first. All text generation functions support streaming:
 
 ```typescript
 await streamText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Tell a story',
   onChunk: (chunk) => {
     // Handle streaming chunks

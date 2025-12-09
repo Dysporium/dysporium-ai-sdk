@@ -32,7 +32,7 @@ Use the `generateText` function to create completions:
 
 ```typescript
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Write a haiku about TypeScript',
 });
 
@@ -55,7 +55,7 @@ async function main() {
 
   // Generate text
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5.1'),
     prompt: 'Explain TypeScript in one sentence',
     maxTokens: 100,
     temperature: 0.7,
@@ -74,7 +74,7 @@ For conversational AI, use the messages API:
 
 ```typescript
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   messages: [
     { role: 'system', content: 'You are a helpful assistant.' },
     { role: 'user', content: 'What is TypeScript?' },
@@ -90,7 +90,7 @@ Stream responses in real-time:
 import { streamText } from '@dysporium-sdk/core';
 
 const result = await streamText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Tell me a story',
   onChunk: (chunk) => {
     if (chunk.type === 'text-delta') {

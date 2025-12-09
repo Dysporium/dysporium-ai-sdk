@@ -137,11 +137,19 @@ const similarity = cosineSimilarity(results.embeddings[0], results.embeddings[1]
 
 ### Language Models
 
-- `gpt-4o` - Most capable model
+- `gpt-5.1` - Latest model (November 2025)
+- `gpt-5` - Advanced reasoning & multimodal (August 2025)
+- `gpt-5-mini` - Efficient GPT-5 variant
+- `gpt-4.1` - Enhanced GPT-4 (April 2025)
+- `gpt-4.1-mini` - Fast and efficient
+- `gpt-4.1-nano` - Smallest and fastest
+- `gpt-4o` - Multimodal model
 - `gpt-4o-mini` - Fast and affordable
-- `gpt-4-turbo` - GPT-4 Turbo with vision
-- `gpt-4` - Original GPT-4
-- `gpt-3.5-turbo` - Fast and cost-effective
+
+### Codex Models (Code-optimized)
+
+- `gpt-5.1-codex-max` - Complex, long-horizon coding tasks
+- `gpt-5.1-codex-mini` - Efficient coding assistance
 
 ### Embedding Models
 

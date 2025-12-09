@@ -14,7 +14,7 @@ const openai = createOpenAI({
 });
 
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Write a haiku about TypeScript',
 });
 
@@ -30,7 +30,7 @@ const messages = [
 ];
 
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   messages,
 });
 
@@ -43,7 +43,7 @@ console.log(result.text);
 import { streamText } from '@dysporium-sdk/core';
 
 await streamText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Tell a story',
   onChunk: (chunk) => {
     if (chunk.type === 'text-delta') {
@@ -58,7 +58,7 @@ await streamText({
 ```typescript
 import { DysporiumClient } from '@dysporium-sdk/core';
 
-const client = new DysporiumClient(openai('gpt-4'));
+const client = new DysporiumClient(openai('gpt-5.1'));
 
 const result = await client.generate({
   prompt: 'Hello, world!',

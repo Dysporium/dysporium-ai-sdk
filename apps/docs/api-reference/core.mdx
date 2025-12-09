@@ -35,7 +35,7 @@ function generateText(options: GenerateTextOptions): Promise<GenerateTextResult>
 
 ```typescript
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Hello, world!',
   maxTokens: 100,
 });
@@ -62,7 +62,7 @@ function streamText(options: StreamTextOptions): Promise<StreamTextResult>
 
 ```typescript
 await streamText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Tell a story',
   onChunk: (chunk) => {
     if (chunk.type === 'text-delta') {
@@ -145,7 +145,7 @@ class DysporiumClient {
 **Example:**
 
 ```typescript
-const client = new DysporiumClient(openai('gpt-4'));
+const client = new DysporiumClient(openai('gpt-5.1'));
 
 const result = await client.generate({
   prompt: 'Hello!',

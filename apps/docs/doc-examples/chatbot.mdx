@@ -31,7 +31,7 @@ async function chat(userMessage: string) {
   let fullResponse = '';
   
   await streamText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5.1'),
     messages: conversationHistory,
     onChunk: (chunk) => {
       if (chunk.type === 'text-delta') {
@@ -79,7 +79,7 @@ function Chatbot() {
 
     // Stream response
     await streamText({
-      model: openai('gpt-4'),
+      model: openai('gpt-5.1'),
       messages: newMessages,
       onChunk: (chunk) => {
         if (chunk.type === 'text-delta') {

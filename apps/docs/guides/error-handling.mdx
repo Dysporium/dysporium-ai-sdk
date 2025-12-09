@@ -14,7 +14,7 @@ import { APIError, RateLimitError } from '@dysporium-sdk/openai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5.1'),
     prompt: 'Hello',
   });
 } catch (error) {
@@ -38,7 +38,7 @@ import { RateLimitError } from '@dysporium-sdk/openai';
 async function generateWithRetry(prompt: string) {
   try {
     return await generateText({
-      model: openai('gpt-4'),
+      model: openai('gpt-5.1'),
       prompt,
     });
   } catch (error) {
@@ -71,7 +71,7 @@ Implement custom error handling:
 async function safeGenerate(prompt: string) {
   try {
     const result = await generateText({
-      model: openai('gpt-4'),
+      model: openai('gpt-5.1'),
       prompt,
     });
     return { success: true, data: result };
@@ -104,7 +104,7 @@ function validatePrompt(prompt: string): void {
 async function generate(prompt: string) {
   validatePrompt(prompt);
   return await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5.1'),
     prompt,
   });
 }

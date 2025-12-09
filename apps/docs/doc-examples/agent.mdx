@@ -45,7 +45,7 @@ const tools: Tool[] = [
 ];
 
 // Create agent
-const agent = new DysporiumClient(openai('gpt-4'));
+const agent = new DysporiumClient(openai('gpt-5.1'));
 
 async function runAgent(task: string) {
   const result = await agent.generateWithTools({

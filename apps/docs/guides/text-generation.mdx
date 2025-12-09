@@ -18,7 +18,7 @@ const openai = createOpenAI({
 });
 
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Write a haiku about programming',
 });
 
@@ -31,7 +31,7 @@ For conversational AI, use the messages API:
 
 ```typescript
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   messages: [
     { role: 'system', content: 'You are a helpful assistant.' },
     { role: 'user', content: 'What is TypeScript?' },
@@ -45,7 +45,7 @@ Set a system message to guide model behavior:
 
 ```typescript
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   system: 'You are a coding assistant. Always provide code examples.',
   prompt: 'Explain async/await',
 });
@@ -57,7 +57,7 @@ Control generation with parameters:
 
 ```typescript
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Write a story',
   maxTokens: 500,        // Maximum length
   temperature: 0.7,      // Creativity (0-2)
@@ -97,7 +97,7 @@ import { APIError, RateLimitError } from '@dysporium-sdk/openai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5.1'),
     prompt: 'Hello',
   });
 } catch (error) {
@@ -117,7 +117,7 @@ Access token usage:
 
 ```typescript
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5.1'),
   prompt: 'Hello',
 });
 

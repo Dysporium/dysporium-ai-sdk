@@ -23,7 +23,7 @@ const openai = createOpenAI({
 });
 
 // Create a model instance
-const model = openai('gpt-4');
+const model = openai('gpt-5.1');
 ```
 
 ### Creating Model Instances
@@ -32,10 +32,10 @@ Providers are functions that return model instances:
 
 ```typescript
 // Single model
-const gpt4 = openai('gpt-4');
+const gpt5 = openai('gpt-5.1');
 
 // With options
-const gpt4Turbo = openai('gpt-4-turbo-preview', {
+const gpt5Mini = openai('gpt-5-mini', {
   temperature: 0.7,
 });
 ```
@@ -58,7 +58,7 @@ const openai = createOpenAI({
 
 <CardGroup cols={2}>
   <Card title="OpenAI" icon="bolt">
-    Full OpenAI API support including GPT-4, embeddings, and function calling
+    Full OpenAI API support including GPT-5.1, Codex, embeddings, and function calling
   </Card>
   <Card title="Custom Providers" icon="code">
     Build your own using the provider interface
@@ -77,7 +77,7 @@ const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
 // const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // Use different providers for different tasks
-const gpt4 = openai('gpt-4');
+const gpt5 = openai('gpt-5.1');
 // const claude = anthropic('claude-3-opus');
 ```
 
@@ -94,7 +94,7 @@ This means you can switch providers without changing your application code:
 ```typescript
 // Works with any provider
 const result = await generateText({
-  model: openai('gpt-4'), // or anthropic('claude-3'), etc.
+  model: openai('gpt-5.1'), // or anthropic('claude-3'), etc.
   prompt: 'Hello',
 });
 ```
