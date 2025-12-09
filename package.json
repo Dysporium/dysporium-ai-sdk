@@ -8,11 +8,12 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:packages": "turbo run build --filter=@dysporium-sdk/*",
     "dev": "turbo run dev",
     "clean": "turbo run clean",
     "changeset": "changeset",
-    "version": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "changeset:version": "changeset version",
+    "release": "pnpm build:packages && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

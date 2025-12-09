@@ -1,6 +1,6 @@
 {
   "name": "@dysporium-sdk/openai",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "OpenAI provider for Dysporium SDK",
   "type": "module",
   "main": "./dist/index.js",

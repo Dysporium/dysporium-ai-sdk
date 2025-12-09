@@ -20,7 +20,7 @@ This creates a markdown file in `.changeset/` describing your change.
 ### 2. Version Packages (before releasing)
 
 ```bash
-pnpm version
+pnpm changeset:version
 ```
 
 This consumes all changeset files and:
