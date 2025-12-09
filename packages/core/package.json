@@ -30,7 +30,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dysporium/dysporium-sdk.git",
+    "url": "https://github.com/Dysporium/dysporium-ai-sdk.git",
     "directory": "packages/core"
   },
   "publishConfig": {
