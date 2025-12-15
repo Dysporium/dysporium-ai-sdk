@@ -40,6 +40,12 @@ export const FOOTER_CONTENT = {
           external: true,
         },
         {
+          id: 'anthropic',
+          label: '@dysporium-sdk/anthropic',
+          href: 'https://www.npmjs.com/package/@dysporium-sdk/anthropic',
+          external: true,
+        },
+        {
           id: 'provider',
           label: '@dysporium-sdk/provider',
           href: 'https://www.npmjs.com/package/@dysporium-sdk/provider',

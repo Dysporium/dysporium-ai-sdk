@@ -12,30 +12,26 @@ export interface CodeExample {
 
 export const CODE_CONTENT = {
   section: {
-    label: 'OpenAI Provider',
+    label: 'AI Providers',
     heading: {
       line1: 'Powered by',
-      line2: 'OpenAI Models',
-      highlight: 'OpenAI Models',
+      line2: 'OpenAI & Anthropic',
+      highlight: 'OpenAI & Anthropic',
     },
     description:
-      'Full support for OpenAI\'s latest models including GPT-4o, GPT-4 Turbo, and text embeddings.',
+      'Full support for OpenAI\'s latest models (GPT-5.1, GPT-4o) and Anthropic\'s Claude models (Claude 4.5, Claude 4).',
     features: [
       {
-        id: 'gpt-4o',
-        text: 'gpt-4o & gpt-4o-mini',
+        id: 'openai',
+        text: 'OpenAI: GPT-5.1, GPT-4o, Codex',
       },
       {
-        id: 'gpt-4-turbo',
-        text: 'gpt-4-turbo & gpt-4',
-      },
-      {
-        id: 'gpt-3.5',
-        text: 'gpt-3.5-turbo',
+        id: 'anthropic',
+        text: 'Anthropic: Claude 4.5, Claude 4',
       },
       {
         id: 'embeddings',
-        text: 'text-embedding-3-small & large',
+        text: 'OpenAI Embeddings',
       },
     ] as Array<FeatureItem>,
   },
@@ -46,6 +42,8 @@ export const CODE_CONTENT = {
       filename: 'Chat.tsx',
       content: `import { useState } from 'react'
 import { createOpenAI, streamText } from '@dysporium-sdk/openai'
+// or
+// import { createAnthropic, streamText } from '@dysporium-sdk/anthropic'
 
 const openai = createOpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -58,9 +56,11 @@ export function Chat() {
     setResponse('')
     await streamText({
       model: openai('gpt-4o'),
-      prompt,
+      messages: [{ role: 'user', content: prompt }],
       onChunk: (chunk) => {
-        setResponse((prev) => prev + chunk.textDelta)
+        if (chunk.type === 'text-delta') {
+          setResponse((prev) => prev + chunk.textDelta)
+        }
       },
     })
   }
@@ -73,6 +73,8 @@ export function Chat() {
       label: 'Generate',
       filename: 'generate.ts',
       content: `import { createOpenAI, generateText } from '@dysporium-sdk/openai'
+// or
+// import { createAnthropic, generateText } from '@dysporium-sdk/anthropic'
 
 const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -80,11 +82,28 @@ const openai = createOpenAI({
 
 const result = await generateText({
   model: openai('gpt-4o'),
-  prompt: 'Explain quantum computing',
+  messages: [{ role: 'user', content: 'Explain quantum computing' }],
 })
 
 console.log(result.text)
-console.log(result.usage) // { promptTokens, completionTokens, totalTokens }`,
+console.log(result.usage) // { inputTokens, outputTokens, totalTokens }`,
+    },
+    {
+      id: 'anthropic',
+      label: 'Anthropic',
+      filename: 'anthropic.ts',
+      content: `import { createAnthropic, generateText } from '@dysporium-sdk/anthropic'
+
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+})
+
+const result = await generateText({
+  model: anthropic('claude-sonnet-4-5'),
+  messages: [{ role: 'user', content: 'Hello!' }],
+})
+
+console.log(result.text)`,
     },
     {
       id: 'embeddings',

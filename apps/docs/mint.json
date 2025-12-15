@@ -41,6 +41,7 @@
       "pages": [
         "api-reference/core",
         "api-reference/openai",
+        "api-reference/anthropic",
         "api-reference/provider"
       ]
     },

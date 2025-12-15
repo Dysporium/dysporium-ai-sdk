@@ -17,7 +17,7 @@ export const HERO_CONTENT = {
     highlight: 'Production Scale',
   },
   description:
-    'The modern TypeScript SDK for building AI applications. Type-safe, streaming-first, with OpenAI support out of the box.',
+    'The modern TypeScript SDK for building AI applications. Type-safe, streaming-first, with OpenAI and Anthropic support out of the box.',
   installCommand: 'npm install @dysporium-sdk/openai',
   ctaButtons: [
     {

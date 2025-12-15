@@ -11,7 +11,7 @@ pnpm changeset
 ```
 
 You'll be prompted to:
-- Select which packages were affected (`@dysporium-sdk/core`, `@dysporium-sdk/openai`, `@dysporium-sdk/provider`)
+- Select which packages were affected (`@dysporium-sdk/core`, `@dysporium-sdk/openai`, `@dysporium-sdk/anthropic`, `@dysporium-sdk/provider`)
 - Choose the semver bump type: `patch`, `minor`, or `major`
 - Write a summary describing the change
 

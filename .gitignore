@@ -50,6 +50,9 @@ Desktop.ini
 # pnpm
 .pnpm-store/
 
+# npm
+.npmrc
+
 # TypeScript
 *.tsbuildinfo
 

@@ -9,15 +9,21 @@ Dysporium SDK is split into multiple packages for modularity:
 
 ### Option 1: All-in-One (Recommended)
 
-Install the OpenAI package which includes everything you need:
+Install a provider package which includes everything you need:
 
+**For OpenAI:**
 ```bash npm
 npm install @dysporium-sdk/openai
 ```
 
-This includes:
+**For Anthropic:**
+```bash npm
+npm install @dysporium-sdk/anthropic
+```
+
+Each provider package includes:
 - `@dysporium-sdk/core` - Core functionality
-- `@dysporium-sdk/openai` - OpenAI provider
+- Provider-specific implementation (OpenAI or Anthropic)
 - `@dysporium-sdk/provider` - Provider interfaces
 
 ### Option 2: Individual Packages
@@ -46,6 +52,13 @@ npm install @dysporium-sdk/core @dysporium-sdk/openai
     OpenAI provider implementation with full API support
   </Card>
   <Card
+    title="@dysporium-sdk/anthropic"
+    icon="package"
+    href="https://www.npmjs.com/package/@dysporium-sdk/anthropic"
+  >
+    Anthropic provider implementation with Claude model support
+  </Card>
+  <Card
     title="@dysporium-sdk/provider"
     icon="package"
     href="https://www.npmjs.com/package/@dysporium-sdk/provider"
@@ -58,16 +71,23 @@ npm install @dysporium-sdk/core @dysporium-sdk/openai
 
 ### API Keys
 
-Set your OpenAI API key as an environment variable:
+Set your API keys as environment variables:
 
+**For OpenAI:**
 ```bash
 export OPENAI_API_KEY=your-api-key-here
+```
+
+**For Anthropic:**
+```bash
+export ANTHROPIC_API_KEY=your-api-key-here
 ```
 
 Or create a `.env` file:
 
 ```env
 OPENAI_API_KEY=your-api-key-here
+ANTHROPIC_API_KEY=your-api-key-here
 ```
 
 ### TypeScript
@@ -82,11 +102,23 @@ Requires Node.js 18+ for native async/await and modern JavaScript features.
 
 Test your installation:
 
+**With OpenAI:**
 ```typescript
 import { createOpenAI } from '@dysporium-sdk/openai';
 
 const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+});
+
+console.log('Dysporium SDK installed successfully!');
+```
+
+**With Anthropic:**
+```typescript
+import { createAnthropic } from '@dysporium-sdk/anthropic';
+
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 console.log('Dysporium SDK installed successfully!');

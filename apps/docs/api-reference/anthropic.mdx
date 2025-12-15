@@ -1,0 +1,184 @@
+---
+title: Anthropic API Reference
+description: Complete API reference for @dysporium-sdk/anthropic
+---
+
+<Info>
+  This page is auto-generated from TypeScript source code. The Anthropic package provides the Anthropic provider implementation.
+</Info>
+
+## Provider Functions
+
+### createAnthropic
+
+Create an Anthropic language model provider.
+
+```typescript
+function createAnthropic(config: AnthropicConfig): AnthropicProvider
+```
+
+**Parameters:**
+
+- `config.apiKey` - Your Anthropic API key (required)
+- `config.baseURL` - Custom base URL (optional, defaults to `https://api.anthropic.com/v1`)
+- `config.retry` - Retry configuration (optional)
+
+**Returns:** `AnthropicProvider` function
+
+**Example:**
+
+```typescript
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const model = anthropic('claude-sonnet-4-5');
+```
+
+## Available Models
+
+### Latest Models (Claude 4.5)
+
+| Model | Description |
+|-------|-------------|
+| `claude-sonnet-4-5-20250929` / `claude-sonnet-4-5` | Best balance of intelligence, speed, and cost |
+| `claude-haiku-4-5-20251001` / `claude-haiku-4-5` | Fastest model with near-frontier intelligence |
+| `claude-opus-4-5-20251101` / `claude-opus-4-5` | Maximum intelligence with practical performance |
+
+### Claude 4 Models
+
+| Model | Description |
+|-------|-------------|
+| `claude-opus-4-1-20250805` / `claude-opus-4-1` | Enhanced Claude 4.1 Opus |
+| `claude-sonnet-4-20250514` / `claude-sonnet-4-0` | Claude 4 Sonnet |
+| `claude-opus-4-20250514` / `claude-opus-4-0` | Claude 4 Opus |
+
+### Legacy Models
+
+| Model | Description |
+|-------|-------------|
+| `claude-3-7-sonnet-20250219` | Claude 3.7 Sonnet |
+
+<Info>
+  Model aliases (e.g., `claude-sonnet-4-5`) automatically point to the most recent model snapshot. For production applications, we recommend using specific model versions (e.g., `claude-sonnet-4-5-20250929`) to ensure consistent behavior.
+</Info>
+
+## Model Constants
+
+### anthropicModels
+
+Object of available Anthropic language models:
+
+```typescript
+import { anthropicModels } from '@dysporium-sdk/anthropic';
+
+console.log(anthropicModels);
+// {
+//   'claude-sonnet-4-5-20250929': 'claude-sonnet-4-5-20250929',
+//   'claude-sonnet-4-5': 'claude-sonnet-4-5',
+//   'claude-haiku-4-5-20251001': 'claude-haiku-4-5-20251001',
+//   ...
+// }
+```
+
+## Error Classes
+
+### APIError
+
+Base error class for Anthropic API errors.
+
+```typescript
+class APIError extends Error {
+  status: number
+  code?: string
+  isRetryable: boolean
+}
+```
+
+### RateLimitError
+
+Error thrown when rate limit is exceeded.
+
+```typescript
+class RateLimitError extends APIError {
+  retryAfterMs?: number
+}
+```
+
+**Example:**
+
+```typescript
+import { RateLimitError, APIError } from '@dysporium-sdk/anthropic';
+
+try {
+  const result = await generateText({ /* ... */ });
+} catch (error) {
+  if (error instanceof RateLimitError) {
+    console.log('Rate limit exceeded');
+    console.log('Retry after:', error.retryAfterMs, 'ms');
+  } else if (error instanceof APIError) {
+    console.log('API error:', error.status, error.code);
+  }
+}
+```
+
+## Types
+
+### AnthropicConfig
+
+Configuration for Anthropic provider:
+
+```typescript
+interface AnthropicConfig {
+  apiKey: string
+  baseURL?: string
+  retry?: RetryConfig
+}
+```
+
+### AnthropicModel
+
+Type for Anthropic model IDs:
+
+```typescript
+type AnthropicModel = 
+  | 'claude-sonnet-4-5-20250929'
+  | 'claude-sonnet-4-5'
+  | 'claude-haiku-4-5-20251001'
+  | 'claude-haiku-4-5'
+  | 'claude-opus-4-5-20251101'
+  | 'claude-opus-4-5'
+  | 'claude-opus-4-1-20250805'
+  | 'claude-opus-4-1'
+  | 'claude-sonnet-4-20250514'
+  | 'claude-sonnet-4-0'
+  | 'claude-opus-4-20250514'
+  | 'claude-opus-4-0'
+  | 'claude-3-7-sonnet-20250219'
+  | ...
+```
+
+## Re-exports
+
+The Anthropic package re-exports everything from `@dysporium-sdk/core` for convenience:
+
+```typescript
+import {
+  generateText,
+  streamText,
+  embed,
+  DysporiumClient,
+  // ... all core exports
+} from '@dysporium-sdk/anthropic';
+```
+
+This means you can install just `@dysporium-sdk/anthropic` and get everything you need.
+
+## Features
+
+- **Full Claude 4.5 Support** - Latest models with extended thinking capabilities
+- **Streaming** - Real-time streaming responses
+- **Tool Calling** - Function calling support
+- **Automatic Retries** - Built-in retry logic with exponential backoff
+- **Type Safety** - Full TypeScript support
+

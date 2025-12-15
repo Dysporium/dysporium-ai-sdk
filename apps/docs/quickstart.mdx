@@ -3,7 +3,7 @@ title: Quickstart
 description: Build your first AI application with Dysporium SDK
 ---
 
-In this guide, you'll build a simple AI application that generates text using OpenAI.
+In this guide, you'll build a simple AI application that generates text. We'll use OpenAI as an example, but you can use any provider (OpenAI, Anthropic, etc.).
 
 ## Step 1: Install and Import
 
@@ -18,11 +18,21 @@ import { generateText } from '@dysporium-sdk/core';
 
 ## Step 2: Create a Provider
 
-Create an OpenAI provider instance:
+Create a provider instance:
 
+**With OpenAI:**
 ```typescript
 const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+});
+```
+
+**With Anthropic:**
+```typescript
+import { createAnthropic } from '@dysporium-sdk/anthropic';
+
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 ```
 
