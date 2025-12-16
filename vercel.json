@@ -1,0 +1,7 @@
+{
+  "buildCommand": "pnpm install && pnpm build",
+  "installCommand": "pnpm install",
+  "framework": null,
+  "nodeVersion": "20.x"
+}
+
