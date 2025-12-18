@@ -8,7 +8,20 @@
 const fs = require('fs');
 const path = require('path');
 
-const workspaceRoot = path.resolve(__dirname, '..');
+function findWorkspaceRoot(startDir) {
+  let current = path.resolve(startDir || __dirname);
+  while (current !== path.dirname(current)) {
+    const packageJson = path.join(current, 'package.json');
+    const turboJson = path.join(current, 'turbo.json');
+    if (fs.existsSync(packageJson) && fs.existsSync(turboJson)) {
+      return current;
+    }
+    current = path.dirname(current);
+  }
+  return path.resolve(__dirname, '..');
+}
+
+const workspaceRoot = findWorkspaceRoot(process.cwd());
 const packagesDir = path.join(workspaceRoot, 'packages');
 const appsDir = path.join(workspaceRoot, 'apps');
 
