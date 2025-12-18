@@ -1,6 +1,6 @@
 {
-  "installCommand": "corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm install",
-  "buildCommand": "pnpm turbo build --filter=dysporium-sdk-web",
+  "installCommand": "npm install",
+  "buildCommand": "npx turbo build --filter=dysporium-sdk-web",
   "outputDirectory": "apps/web/.output/public",
   "framework": null
 }
