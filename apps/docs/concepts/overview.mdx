@@ -21,12 +21,12 @@ The SDK follows a provider-based architecture:
          │
          ▼
 ┌─────────────────┐
-│    Provider     │  (OpenAI, Anthropic, etc.)
+│    Provider     │  (OpenAI, Anthropic, Qwen, etc.)
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│   Language Model│  (gpt-5.1, claude-3, etc.)
+│   Language Model│  (gpt-5.1, claude-3, qwen2.5-72b-instruct, etc.)
 └─────────────────┘
 ```
 
@@ -36,9 +36,15 @@ The SDK follows a provider-based architecture:
 
 Providers are implementations of the SDK's provider interface. They handle authentication, API calls, and model-specific logic.
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="OpenAI Provider" icon="bolt">
-    Full OpenAI API support including GPT-4, embeddings, and more
+    Full OpenAI API support including GPT-5.1, Codex, embeddings, and more
+  </Card>
+  <Card title="Anthropic Provider" icon="sparkles">
+    Full Anthropic API support including Claude 4.5, Claude 4, and more
+  </Card>
+  <Card title="Qwen Provider" icon="zap">
+    Full Qwen API support including Qwen 3, Qwen 2.5, and Qwen 2.0 models
   </Card>
   <Card title="Custom Providers" icon="code">
     Build your own providers using the provider interface

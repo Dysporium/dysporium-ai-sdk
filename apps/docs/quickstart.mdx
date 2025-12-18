@@ -3,7 +3,7 @@ title: Quickstart
 description: Build your first AI application with Dysporium SDK
 ---
 
-In this guide, you'll build a simple AI application that generates text. We'll use OpenAI as an example, but you can use any provider (OpenAI, Anthropic, etc.).
+In this guide, you'll build a simple AI application that generates text. We'll use OpenAI as an example, but you can use any provider (OpenAI, Anthropic, Qwen, etc.).
 
 ## Step 1: Install and Import
 
@@ -33,6 +33,15 @@ import { createAnthropic } from '@dysporium-sdk/anthropic';
 
 const anthropic = createAnthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
+});
+```
+
+**With Qwen:**
+```typescript
+import { createQwen } from '@dysporium-sdk/qwen';
+
+const qwen = createQwen({
+  apiKey: process.env.QWEN_API_KEY,
 });
 ```
 

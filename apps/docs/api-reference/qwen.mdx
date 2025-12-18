@@ -1,0 +1,226 @@
+---
+title: Qwen API Reference
+description: Complete API reference for @dysporium-sdk/qwen
+---
+
+<Info>
+  This page is auto-generated from TypeScript source code. The Qwen package provides the Qwen provider implementation.
+</Info>
+
+## Provider Functions
+
+### createQwen
+
+Create a Qwen language model provider.
+
+```typescript
+function createQwen(config: QwenConfig): QwenProvider
+```
+
+**Parameters:**
+
+- `config.apiKey` - Your Qwen API key (required)
+- `config.baseURL` - Custom base URL (optional, defaults to `https://dashscope.aliyuncs.com/api/v1`)
+- `config.retry` - Retry configuration (optional)
+
+**Returns:** `QwenProvider` function
+
+**Example:**
+
+```typescript
+const qwen = createQwen({
+  apiKey: process.env.QWEN_API_KEY,
+});
+
+const model = qwen('qwen2.5-72b-instruct');
+```
+
+## Available Models
+
+### Qwen 3 Series (Latest)
+
+| Model | Description |
+|-------|-------------|
+| `qwen3-235b-a22b-instruct` | Largest Qwen 3 model with advanced capabilities |
+| `qwen3-32b-instruct` | High-performance 32B parameter model |
+| `qwen3-8b-instruct` | Efficient 8B parameter model |
+
+### Qwen 2.5 Series
+
+| Model | Description |
+|-------|-------------|
+| `qwen2.5-72b-instruct` | Flagship model with best performance |
+| `qwen2.5-32b-instruct` | High-performance model |
+| `qwen2.5-14b-instruct` | Balanced performance and efficiency |
+| `qwen2.5-7b-instruct` | Efficient model for general tasks |
+| `qwen2.5-3b-instruct` | Lightweight model |
+| `qwen2.5-1.5b-instruct` | Ultra-lightweight model |
+| `qwen2.5-0.5b-instruct` | Smallest model |
+
+### Qwen 2.5 Specialized Models
+
+| Model | Description |
+|-------|-------------|
+| `qwen2.5-coder-32b-instruct` | Specialized for code generation |
+| `qwen2.5-math-72b-instruct` | Specialized for mathematical reasoning |
+
+### Qwen 2.0 Series
+
+| Model | Description |
+|-------|-------------|
+| `qwen2-72b-instruct` | Flagship Qwen 2.0 model |
+| `qwen2-57b-a14b-instruct` | MoE (Mixture of Experts) model |
+| `qwen2-32b-instruct` | High-performance model |
+| `qwen2-14b-instruct` | Balanced model |
+| `qwen2-7b-instruct` | Efficient model |
+| `qwen2-1.5b-instruct` | Lightweight model |
+| `qwen2-0.5b-instruct` | Smallest model |
+
+### Qwen 1.5 Series (Legacy)
+
+| Model | Description |
+|-------|-------------|
+| `qwen1.5-72b-chat` | Legacy 72B model |
+| `qwen1.5-32b-chat` | Legacy 32B model |
+| `qwen1.5-14b-chat` | Legacy 14B model |
+| `qwen1.5-7b-chat` | Legacy 7B model |
+| `qwen1.5-4b-chat` | Legacy 4B model |
+| `qwen1.5-1.8b-chat` | Legacy 1.8B model |
+| `qwen1.5-0.5b-chat` | Legacy 0.5B model |
+
+<Info>
+  For production applications, we recommend using Qwen 2.5 or Qwen 3 models for the best performance and latest features.
+</Info>
+
+## Model Constants
+
+### qwenModels
+
+Object of available Qwen language models:
+
+```typescript
+import { qwenModels } from '@dysporium-sdk/qwen';
+
+console.log(qwenModels);
+// {
+//   'qwen3-235b-a22b-instruct': 'qwen3-235b-a22b-instruct',
+//   'qwen3-32b-instruct': 'qwen3-32b-instruct',
+//   'qwen2.5-72b-instruct': 'qwen2.5-72b-instruct',
+//   ...
+// }
+```
+
+## Error Classes
+
+### APIError
+
+Base error class for Qwen API errors.
+
+```typescript
+class APIError extends Error {
+  status: number
+  code?: string
+  isRetryable: boolean
+}
+```
+
+### RateLimitError
+
+Error thrown when rate limit is exceeded.
+
+```typescript
+class RateLimitError extends APIError {
+  retryAfterMs?: number
+}
+```
+
+**Example:**
+
+```typescript
+import { RateLimitError, APIError } from '@dysporium-sdk/qwen';
+
+try {
+  const result = await generateText({ /* ... */ });
+} catch (error) {
+  if (error instanceof RateLimitError) {
+    console.log('Rate limit exceeded');
+    console.log('Retry after:', error.retryAfterMs, 'ms');
+  } else if (error instanceof APIError) {
+    console.log('API error:', error.status, error.code);
+  }
+}
+```
+
+## Types
+
+### QwenConfig
+
+Configuration for Qwen provider:
+
+```typescript
+interface QwenConfig {
+  apiKey: string
+  baseURL?: string
+  retry?: RetryConfig
+}
+```
+
+### QwenModel
+
+Type for Qwen model IDs:
+
+```typescript
+type QwenModel = 
+  | 'qwen3-235b-a22b-instruct'
+  | 'qwen3-32b-instruct'
+  | 'qwen3-8b-instruct'
+  | 'qwen2.5-72b-instruct'
+  | 'qwen2.5-32b-instruct'
+  | 'qwen2.5-14b-instruct'
+  | 'qwen2.5-7b-instruct'
+  | 'qwen2.5-3b-instruct'
+  | 'qwen2.5-1.5b-instruct'
+  | 'qwen2.5-0.5b-instruct'
+  | 'qwen2.5-coder-32b-instruct'
+  | 'qwen2.5-math-72b-instruct'
+  | 'qwen2-72b-instruct'
+  | 'qwen2-57b-a14b-instruct'
+  | 'qwen2-32b-instruct'
+  | 'qwen2-14b-instruct'
+  | 'qwen2-7b-instruct'
+  | 'qwen2-1.5b-instruct'
+  | 'qwen2-0.5b-instruct'
+  | 'qwen1.5-72b-chat'
+  | 'qwen1.5-32b-chat'
+  | 'qwen1.5-14b-chat'
+  | 'qwen1.5-7b-chat'
+  | 'qwen1.5-4b-chat'
+  | 'qwen1.5-1.8b-chat'
+  | 'qwen1.5-0.5b-chat'
+  | ...
+```
+
+## Re-exports
+
+The Qwen package re-exports everything from `@dysporium-sdk/core` for convenience:
+
+```typescript
+import {
+  generateText,
+  streamText,
+  embed,
+  DysporiumClient,
+  // ... all core exports
+} from '@dysporium-sdk/qwen';
+```
+
+This means you can install just `@dysporium-sdk/qwen` and get everything you need.
+
+## Features
+
+- **Full Qwen Support** - Latest Qwen 3, Qwen 2.5, and Qwen 2.0 models
+- **Streaming** - Real-time streaming responses
+- **Tool Calling** - Function calling support
+- **Automatic Retries** - Built-in retry logic with exponential backoff
+- **Type Safety** - Full TypeScript support
+

@@ -41,6 +41,21 @@ const anthropic = createAnthropic({
 const model = anthropic('claude-sonnet-4-5');
 ```
 
+### Qwen Provider
+
+The Qwen provider supports Alibaba's Qwen models:
+
+```typescript
+import { createQwen } from '@dysporium-sdk/qwen';
+
+const qwen = createQwen({
+  apiKey: process.env.QWEN_API_KEY,
+});
+
+// Create a model instance
+const model = qwen('qwen2.5-72b-instruct');
+```
+
 ### Creating Model Instances
 
 Providers are functions that return model instances:
@@ -78,6 +93,9 @@ const openai = createOpenAI({
   <Card title="Anthropic" icon="sparkles">
     Full Anthropic API support including Claude 4.5, Claude 4, and Claude 3.7 models
   </Card>
+  <Card title="Qwen" icon="zap">
+    Full Qwen API support including Qwen 3, Qwen 2.5, and Qwen 2.0 models
+  </Card>
   <Card title="Custom Providers" icon="code">
     Build your own using the provider interface
   </Card>
@@ -90,13 +108,16 @@ You can use multiple providers in the same application:
 ```typescript
 import { createOpenAI } from '@dysporium-sdk/openai';
 import { createAnthropic } from '@dysporium-sdk/anthropic';
+import { createQwen } from '@dysporium-sdk/qwen';
 
 const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const qwen = createQwen({ apiKey: process.env.QWEN_API_KEY });
 
 // Use different providers for different tasks
 const gpt5 = openai('gpt-5.1');
 const claude = anthropic('claude-sonnet-4-5');
+const qwenModel = qwen('qwen2.5-72b-instruct');
 ```
 
 ## Provider Interface
@@ -135,6 +156,7 @@ const embeddingModel = embeddingProvider('text-embedding-3-small');
 
 - [API Reference: OpenAI](/api-reference/openai) - Full OpenAI provider API
 - [API Reference: Anthropic](/api-reference/anthropic) - Full Anthropic provider API
+- [API Reference: Qwen](/api-reference/qwen) - Full Qwen provider API
 - [API Reference: Provider](/api-reference/provider) - Provider interface details
 - [Guides: Text Generation](/guides/text-generation) - Using providers in practice
 

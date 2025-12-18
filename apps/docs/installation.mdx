@@ -21,9 +21,14 @@ npm install @dysporium-sdk/openai
 npm install @dysporium-sdk/anthropic
 ```
 
+**For Qwen:**
+```bash npm
+npm install @dysporium-sdk/qwen
+```
+
 Each provider package includes:
 - `@dysporium-sdk/core` - Core functionality
-- Provider-specific implementation (OpenAI or Anthropic)
+- Provider-specific implementation (OpenAI, Anthropic, or Qwen)
 - `@dysporium-sdk/provider` - Provider interfaces
 
 ### Option 2: Individual Packages
@@ -59,6 +64,13 @@ npm install @dysporium-sdk/core @dysporium-sdk/openai
     Anthropic provider implementation with Claude model support
   </Card>
   <Card
+    title="@dysporium-sdk/qwen"
+    icon="package"
+    href="https://www.npmjs.com/package/@dysporium-sdk/qwen"
+  >
+    Qwen provider implementation with Qwen 3, Qwen 2.5, and Qwen 2.0 model support
+  </Card>
+  <Card
     title="@dysporium-sdk/provider"
     icon="package"
     href="https://www.npmjs.com/package/@dysporium-sdk/provider"
@@ -83,11 +95,17 @@ export OPENAI_API_KEY=your-api-key-here
 export ANTHROPIC_API_KEY=your-api-key-here
 ```
 
+**For Qwen:**
+```bash
+export QWEN_API_KEY=your-api-key-here
+```
+
 Or create a `.env` file:
 
 ```env
 OPENAI_API_KEY=your-api-key-here
 ANTHROPIC_API_KEY=your-api-key-here
+QWEN_API_KEY=your-api-key-here
 ```
 
 ### TypeScript
@@ -119,6 +137,17 @@ import { createAnthropic } from '@dysporium-sdk/anthropic';
 
 const anthropic = createAnthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+console.log('Dysporium SDK installed successfully!');
+```
+
+**With Qwen:**
+```typescript
+import { createQwen } from '@dysporium-sdk/qwen';
+
+const qwen = createQwen({
+  apiKey: process.env.QWEN_API_KEY,
 });
 
 console.log('Dysporium SDK installed successfully!');
