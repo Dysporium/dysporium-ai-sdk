@@ -46,6 +46,12 @@ export const FOOTER_CONTENT = {
           external: true,
         },
         {
+          id: 'qwen',
+          label: '@dysporium-sdk/qwen',
+          href: 'https://www.npmjs.com/package/@dysporium-sdk/qwen',
+          external: true,
+        },
+        {
           id: 'provider',
           label: '@dysporium-sdk/provider',
           href: 'https://www.npmjs.com/package/@dysporium-sdk/provider',

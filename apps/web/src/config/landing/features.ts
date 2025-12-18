@@ -39,7 +39,7 @@ export const FEATURES_CONTENT = {
       icon: Layers,
       title: 'Provider Architecture',
       description:
-        'Modular provider system with OpenAI and Anthropic support. Add new providers without changing your code.',
+        'Modular provider system with OpenAI, Anthropic, and Qwen support. Add new providers without changing your code.',
     },
     {
       id: 'embeddings',
