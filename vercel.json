@@ -1,6 +1,6 @@
 {
-  "installCommand": "node scripts/fix-workspace-deps.js && npm install",
-  "buildCommand": "npx turbo build --filter=dysporium-sdk-web",
+  "installCommand": "node ../../scripts/fix-workspace-deps.js && cd ../.. && npm install",
+  "buildCommand": "cd ../.. && npx turbo build --filter=dysporium-sdk-web",
   "outputDirectory": "apps/web/.output/public",
   "framework": null
 }

@@ -9,7 +9,14 @@ const fs = require('fs');
 const path = require('path');
 
 function findWorkspaceRoot(startDir) {
-  let current = path.resolve(startDir || __dirname);
+  let scriptDir = __dirname;
+  let current = path.resolve(scriptDir);
+  
+  if (fs.existsSync(path.join(current, 'package.json')) && fs.existsSync(path.join(current, 'turbo.json'))) {
+    return current;
+  }
+  
+  current = path.dirname(current);
   while (current !== path.dirname(current)) {
     const packageJson = path.join(current, 'package.json');
     const turboJson = path.join(current, 'turbo.json');
@@ -18,10 +25,22 @@ function findWorkspaceRoot(startDir) {
     }
     current = path.dirname(current);
   }
+  
+  current = path.resolve(startDir || process.cwd());
+  while (current !== path.dirname(current)) {
+    const packageJson = path.join(current, 'package.json');
+    const turboJson = path.join(current, 'turbo.json');
+    if (fs.existsSync(packageJson) && fs.existsSync(turboJson)) {
+      return current;
+    }
+    current = path.dirname(current);
+  }
+  
   return path.resolve(__dirname, '..');
 }
 
-const workspaceRoot = findWorkspaceRoot(process.cwd());
+const workspaceRoot = findWorkspaceRoot();
+process.chdir(workspaceRoot);
 const packagesDir = path.join(workspaceRoot, 'packages');
 const appsDir = path.join(workspaceRoot, 'apps');
 
