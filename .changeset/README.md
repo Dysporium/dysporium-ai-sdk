@@ -11,7 +11,7 @@ pnpm changeset
 ```
 
 You'll be prompted to:
-- Select which packages were affected (`@dysporium-sdk/core`, `@dysporium-sdk/openai`, `@dysporium-sdk/anthropic`, `@dysporium-sdk/provider`)
+- Select which packages were affected (`@dysporium-sdk/core`, `@dysporium-sdk/provider`, `@dysporium-sdk/openai`, `@dysporium-sdk/anthropic`, `@dysporium-sdk/qwen`)
 - Choose the semver bump type: `patch`, `minor`, or `major`
 - Write a summary describing the change
 
@@ -34,7 +34,19 @@ This consumes all changeset files and:
 pnpm release
 ```
 
-This builds all packages and publishes them to npm.
+This builds all packages and publishes them to npm. The release script:
+1. Builds all packages
+2. Updates versions using changesets
+3. Resolves `workspace:*` dependencies to actual versions (enables pnpm/npm installation)
+4. Publishes to npm registry
+5. Restores `workspace:*` dependencies for local development
+
+**Note:** The packages are published to npm and can be installed using either `pnpm` or `npm`:
+```bash
+pnpm add @dysporium-sdk/core @dysporium-sdk/openai
+# or
+npm install @dysporium-sdk/core @dysporium-sdk/openai
+```
 
 ## Configuration
 

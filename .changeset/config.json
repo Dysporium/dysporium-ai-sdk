@@ -4,7 +4,7 @@
   "commit": false,
   "fixed": [],
   "linked": [
-    ["@dysporium-sdk/core", "@dysporium-sdk/provider", "@dysporium-sdk/openai", "@dysporium-sdk/anthropic"]
+    ["@dysporium-sdk/core", "@dysporium-sdk/provider", "@dysporium-sdk/openai", "@dysporium-sdk/anthropic", "@dysporium-sdk/qwen"]
   ],
   "access": "public",
   "baseBranch": "main",

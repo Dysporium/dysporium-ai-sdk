@@ -13,7 +13,9 @@
     "clean": "turbo run clean",
     "changeset": "changeset",
     "changeset:version": "changeset version",
-    "release": "pnpm build:packages && changeset publish"
+    "resolve-deps": "node scripts/resolve-workspace-deps-for-publish.js",
+    "restore-deps": "node scripts/restore-workspace-deps.js",
+    "release": "pnpm build:packages && pnpm changeset:version && pnpm resolve-deps && changeset publish && pnpm restore-deps"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

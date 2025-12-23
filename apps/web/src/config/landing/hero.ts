@@ -18,7 +18,11 @@ export const HERO_CONTENT = {
   },
   description:
     'The modern TypeScript SDK for building AI applications. Type-safe, streaming-first, with OpenAI, Anthropic, and Qwen support out of the box.',
-  installCommand: 'npm install @dysporium-sdk/openai',
+  installCommands: {
+    npm: 'npm install @dysporium-sdk/openai',
+    pnpm: 'pnpm add @dysporium-sdk/openai',
+  },
+  installCommand: 'npm install @dysporium-sdk/openai', // Default for backward compatibility
   ctaButtons: [
     {
       id: 'start-building',
