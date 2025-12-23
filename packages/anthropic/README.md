@@ -8,6 +8,8 @@ Anthropic provider for Dysporium SDK - integrate Claude models with a simple, ty
 npm install @dysporium-sdk/anthropic
 # or
 pnpm add @dysporium-sdk/anthropic
+# or
+yarn add @dysporium-sdk/anthropic
 ```
 
 > **Note:** This package includes all exports from `@dysporium-sdk/core`, so you only need to install this single package.

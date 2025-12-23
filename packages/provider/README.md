@@ -8,6 +8,8 @@ Provider interfaces and types for Dysporium SDK. This package defines the contra
 npm install @dysporium-sdk/provider
 # or
 pnpm add @dysporium-sdk/provider
+# or
+yarn add @dysporium-sdk/provider
 ```
 
 > **Note:** You typically don't need to install this package directly. It's included as a dependency of `@dysporium-sdk/core` and provider packages like `@dysporium-sdk/openai`.

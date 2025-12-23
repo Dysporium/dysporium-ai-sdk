@@ -8,6 +8,8 @@ Core functionality for Dysporium SDK - a TypeScript library for AI/LLM integrati
 npm install @dysporium-sdk/core
 # or
 pnpm add @dysporium-sdk/core
+# or
+yarn add @dysporium-sdk/core
 ```
 
 ## Features

@@ -8,6 +8,8 @@ OpenAI provider for Dysporium SDK - integrate OpenAI models with a simple, type-
 npm install @dysporium-sdk/openai
 # or
 pnpm add @dysporium-sdk/openai
+# or
+yarn add @dysporium-sdk/openai
 ```
 
 > **Note:** This package includes all exports from `@dysporium-sdk/core`, so you only need to install this single package.

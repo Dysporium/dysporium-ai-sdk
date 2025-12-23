@@ -8,6 +8,8 @@ Qwen provider for Dysporium SDK - integrate Qwen models with a simple, type-safe
 npm install @dysporium-sdk/qwen
 # or
 pnpm add @dysporium-sdk/qwen
+# or
+yarn add @dysporium-sdk/qwen
 ```
 
 > **Note:** This package includes all exports from `@dysporium-sdk/core`, so you only need to install this single package.
