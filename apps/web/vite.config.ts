@@ -9,9 +9,8 @@ import { nitro } from 'nitro/vite'
 const config = defineConfig({
   plugins: [
     devtools(),
-
     nitro({
-      preset: 'vercel',
+      preset: 'static',
     }),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
