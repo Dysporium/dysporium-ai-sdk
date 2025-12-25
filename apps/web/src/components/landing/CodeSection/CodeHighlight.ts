@@ -9,10 +9,10 @@ function escapeHtml(text: string): string {
 
 type TokenType = 'keyword' | 'string' | 'comment' | 'function' | 'type' | 'number' | 'operator' | 'plain'
 
-interface Token {
-  type: TokenType
-  value: string
-}
+// interface Token {
+//   type: TokenType
+//   value: string
+// }
 
 const COLORS: Record<TokenType, string> = {
   keyword: '#ff79c6',
