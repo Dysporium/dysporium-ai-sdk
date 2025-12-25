@@ -1,7 +1,5 @@
 {
-  "rootDirectory": "apps/web",
   "installCommand": "node ../../scripts/fix-workspace-deps.js && cd ../.. && npm install",
   "buildCommand": "cd ../.. && npx turbo build --filter=dysporium-sdk-web",
   "outputDirectory": ".output/public"
 }
-
