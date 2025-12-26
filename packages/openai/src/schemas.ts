@@ -19,12 +19,31 @@ export const openAIToolCallSchema = z.object({
   }),
 });
 
+// ===== Logprobs Schema =====
+
+export const openAILogprobContentSchema = z.object({
+  token: z.string(),
+  logprob: z.number(),
+  bytes: z.array(z.number()).nullable(),
+  top_logprobs: z.array(z.object({
+    token: z.string(),
+    logprob: z.number(),
+    bytes: z.array(z.number()).nullable(),
+  })).optional(),
+});
+
+export const openAILogprobsSchema = z.object({
+  content: z.array(openAILogprobContentSchema).nullable(),
+  refusal: z.array(openAILogprobContentSchema).nullable().optional(),
+});
+
 // ===== Message Schema =====
 
 export const openAIMessageSchema = z.object({
   role: z.string(),
   content: z.string().nullable(),
   tool_calls: z.array(openAIToolCallSchema).optional(),
+  refusal: z.string().nullable().optional(),
 });
 
 // ===== Non-streaming Response =====
@@ -33,6 +52,7 @@ export const openAIChoiceSchema = z.object({
   index: z.number().int().nonnegative(),
   message: openAIMessageSchema,
   finish_reason: z.string().nullable(),
+  logprobs: openAILogprobsSchema.nullable().optional(),
 });
 
 export const openAIResponseSchema = z.object({
@@ -42,6 +62,8 @@ export const openAIResponseSchema = z.object({
   model: z.string(),
   choices: z.array(openAIChoiceSchema).min(1),
   usage: openAIUsageSchema,
+  system_fingerprint: z.string().nullable().optional(),
+  service_tier: z.string().nullable().optional(),
 });
 
 // ===== Streaming Response =====
@@ -66,6 +88,7 @@ export const openAIStreamChoiceSchema = z.object({
   index: z.number().int().nonnegative(),
   delta: openAIDeltaSchema,
   finish_reason: z.string().nullable(),
+  logprobs: openAILogprobsSchema.nullable().optional(),
 });
 
 export const openAIStreamChunkSchema = z.object({
@@ -75,6 +98,8 @@ export const openAIStreamChunkSchema = z.object({
   model: z.string(),
   choices: z.array(openAIStreamChoiceSchema),
   usage: openAIUsageSchema.nullable().optional(),
+  system_fingerprint: z.string().nullable().optional(),
+  service_tier: z.string().nullable().optional(),
 });
 
 // ===== Error Schema =====

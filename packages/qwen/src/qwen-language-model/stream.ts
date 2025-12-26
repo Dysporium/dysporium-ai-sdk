@@ -29,6 +29,7 @@ export async function* streamText(
     max_tokens: options.maxTokens,
     temperature: options.temperature,
     top_p: options.topP,
+    top_k: options.topK,
     stop: options.stopSequences,
     stream: true,
   };
@@ -38,6 +39,9 @@ export async function* streamText(
     if (options.toolChoice) {
       request.tool_choice = mapToolChoiceToQwen(options.toolChoice);
     }
+    if (options.parallelToolCalls !== undefined) {
+      request.parallel_tool_calls = options.parallelToolCalls;
+    }
   }
 
   if (options.responseFormat) {
@@ -45,6 +49,16 @@ export async function* streamText(
     if (responseFormat) {
       request.response_format = responseFormat;
     }
+  }
+
+  if (options.frequencyPenalty !== undefined) {
+    request.frequency_penalty = options.frequencyPenalty;
+  }
+  if (options.presencePenalty !== undefined) {
+    request.presence_penalty = options.presencePenalty;
+  }
+  if (options.seed !== undefined) {
+    request.seed = options.seed;
   }
 
   const response = await makeAPICall(baseURL, config, request);
@@ -127,18 +141,21 @@ export async function* streamText(
             }
 
             const choice = chunk.choices[0];
+            if (!choice) continue;
+
+            const delta = choice.delta;
 
             // Handle text deltas
-            if (choice.delta.content) {
+            if ('content' in delta && delta.content) {
               yield {
                 type: 'text-delta',
-                textDelta: choice.delta.content,
+                textDelta: delta.content,
               };
             }
 
             // Handle tool call deltas
-            if (choice.delta.tool_calls) {
-              for (const toolCallDelta of choice.delta.tool_calls) {
+            if ('tool_calls' in delta && delta.tool_calls) {
+              for (const toolCallDelta of delta.tool_calls) {
                 if (toolCallDelta.index !== undefined) {
                   let acc = toolCallAccumulators.get(toolCallDelta.index);
                   if (!acc) {

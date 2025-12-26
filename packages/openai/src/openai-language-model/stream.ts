@@ -39,11 +39,66 @@ export async function* streamText(
     if (options.toolChoice) {
       request.tool_choice = mapToolChoiceToOpenAI(options.toolChoice);
     }
+    if (options.parallelToolCalls !== undefined) {
+      request.parallel_tool_calls = options.parallelToolCalls;
+    }
   }
 
   // Add response format if provided
   if (options.responseFormat) {
     request.response_format = mapResponseFormatToOpenAI(options.responseFormat);
+  }
+
+  // Diversity controls
+  if (options.frequencyPenalty !== undefined) {
+    request.frequency_penalty = options.frequencyPenalty;
+  }
+  if (options.presencePenalty !== undefined) {
+    request.presence_penalty = options.presencePenalty;
+  }
+
+  // Advanced options
+  if (options.logitBias !== undefined) {
+    request.logit_bias = options.logitBias;
+  }
+  if (options.logprobs !== undefined) {
+    request.logprobs = options.logprobs;
+  }
+  if (options.topLogprobs !== undefined) {
+    request.top_logprobs = options.topLogprobs;
+  }
+  if (options.n !== undefined) {
+    request.n = options.n;
+  }
+  if (options.seed !== undefined) {
+    request.seed = options.seed;
+  }
+  if (options.user !== undefined) {
+    request.user = options.user;
+  }
+
+  // Service options
+  if (options.serviceTier !== undefined) {
+    request.service_tier = options.serviceTier;
+  }
+  if (options.store !== undefined) {
+    request.store = options.store;
+  }
+  if (options.metadata !== undefined) {
+    request.metadata = options.metadata;
+  }
+
+  // Reasoning models
+  if (options.reasoningEffort !== undefined) {
+    request.reasoning_effort = options.reasoningEffort;
+  }
+  if (options.maxCompletionTokens !== undefined) {
+    request.max_completion_tokens = options.maxCompletionTokens;
+  }
+
+  // Predicted outputs
+  if (options.prediction !== undefined) {
+    request.prediction = options.prediction;
   }
 
   const response = await makeAPICall(baseURL, config, request);

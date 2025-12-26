@@ -42,10 +42,16 @@ export interface AnthropicTool {
 
 // ===== Anthropic Request =====
 
+export interface AnthropicThinkingConfig {
+  type: 'enabled';
+  budget_tokens: number;
+}
+
 export interface AnthropicRequest {
   model: string;
   max_tokens: number;
   messages: AnthropicMessage[];
+  system?: string | Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral' } }>;
   temperature?: number;
   top_p?: number;
   top_k?: number;
@@ -56,6 +62,9 @@ export interface AnthropicRequest {
   metadata?: {
     user_id?: string;
   };
+
+  // Extended thinking (Claude 3.5+ models)
+  thinking?: AnthropicThinkingConfig;
 }
 
 // ===== Mapping Functions =====

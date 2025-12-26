@@ -1,6 +1,6 @@
 {
   "name": "@dysporium-sdk/provider",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Provider interfaces and types for Dysporium SDK",
   "type": "module",
   "main": "./dist/index.js",

@@ -29,10 +29,12 @@ export async function* streamText(
     max_tokens: options.maxTokens || 4096,
     temperature: options.temperature,
     top_p: options.topP,
+    top_k: options.topK,
     stop_sequences: options.stopSequences,
     stream: true,
   };
 
+  // Add tools if provided
   if (options.tools && options.tools.length > 0) {
     request.tools = options.tools.map(mapToolToAnthropic);
     if (options.toolChoice) {
@@ -40,8 +42,22 @@ export async function* streamText(
     }
   }
 
+  // Add response format warning
   if (options.responseFormat) {
     mapResponseFormatToAnthropic(options.responseFormat);
+  }
+
+  // Add user metadata for abuse detection
+  if (options.user) {
+    request.metadata = { user_id: options.user };
+  }
+
+  // Add extended thinking if provided
+  if (options.thinking) {
+    request.thinking = {
+      type: 'enabled',
+      budget_tokens: options.thinking.budgetTokens,
+    };
   }
 
   const response = await makeAPICall(baseURL, config, request);

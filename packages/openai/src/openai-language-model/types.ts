@@ -68,6 +68,31 @@ export interface OpenAIRequest {
   tools?: OpenAITool[];
   tool_choice?: OpenAIToolChoice;
   response_format?: OpenAIResponseFormat;
+
+  frequency_penalty?: number; // -2.0 to 2.0, reduces repetition
+  presence_penalty?: number; // -2.0 to 2.0, encourages new topics
+
+  logit_bias?: Record<string, number>;
+  logprobs?: boolean;
+  top_logprobs?: number;
+  n?: number;
+  seed?: number;
+  user?: string;
+
+  parallel_tool_calls?: boolean; // Allow parallel function execution
+
+  service_tier?: 'auto' | 'default'; // Priority access tier
+  store?: boolean; // Store completion for model improvement
+  metadata?: Record<string, string>; // Custom metadata for stored completions
+
+  reasoning_effort?: 'low' | 'medium' | 'high';
+  max_completion_tokens?: number; // Used instead of max_tokens for o-series
+
+  // Predicted outputs
+  prediction?: {
+    type: 'content';
+    content: string | Array<{ type: 'text'; text: string }>;
+  };
 }
 
 // ===== Mapping Functions =====

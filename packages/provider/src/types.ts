@@ -56,15 +56,50 @@ export interface GenerateOptions {
   maxTokens?: number;
   temperature?: number;
   topP?: number;
+  topK?: number; // Anthropic: top-k sampling
   stopSequences?: string[];
   stream?: boolean;
-  
+
   // Tool calling
   tools?: Tool[];
   toolChoice?: ToolChoice;
-  
+  parallelToolCalls?: boolean;
+
   // Structured output
   responseFormat?: ResponseFormat;
+
+  // Diversity controls
+  frequencyPenalty?: number;
+  presencePenalty?: number;
+
+  // Advanced options
+  logitBias?: Record<string, number>;
+  logprobs?: boolean;
+  topLogprobs?: number;
+  n?: number;
+  seed?: number;
+  user?: string;
+
+  // Service options
+  serviceTier?: 'auto' | 'default';
+  store?: boolean;
+  metadata?: Record<string, string>;
+
+  // OpenAI reasoning models (o1, o3, o4-mini)
+  reasoningEffort?: 'low' | 'medium' | 'high';
+  maxCompletionTokens?: number;
+
+  // Predicted outputs (OpenAI)
+  prediction?: {
+    type: 'content';
+    content: string | Array<{ type: 'text'; text: string }>;
+  };
+
+  // Extended thinking (Anthropic Claude 3.5+)
+  thinking?: {
+    type: 'enabled';
+    budgetTokens: number;
+  };
 }
 
 // ===== Usage =====
@@ -75,6 +110,24 @@ export interface Usage {
   totalTokens: number;
 }
 
+// ===== Logprobs =====
+
+export interface LogprobToken {
+  token: string;
+  logprob: number;
+  bytes: number[] | null;
+  topLogprobs?: Array<{
+    token: string;
+    logprob: number;
+    bytes: number[] | null;
+  }>;
+}
+
+export interface Logprobs {
+  content: LogprobToken[] | null;
+  refusal?: LogprobToken[] | null;
+}
+
 // ===== Generate Result =====
 
 export interface GenerateResult {
@@ -82,6 +135,9 @@ export interface GenerateResult {
   usage: Usage;
   finishReason: 'stop' | 'length' | 'content_filter' | 'tool_calls' | string;
   toolCalls?: ToolCall[];
+  logprobs?: Logprobs | null;
+  systemFingerprint?: string | null;
+  serviceTier?: string | null;
   raw?: unknown;
 }
 

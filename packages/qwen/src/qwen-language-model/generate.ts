@@ -22,6 +22,7 @@ export async function generateText(
     max_tokens: options.maxTokens,
     temperature: options.temperature,
     top_p: options.topP,
+    top_k: options.topK,
     stop: options.stopSequences,
     stream: false,
   };
@@ -31,6 +32,9 @@ export async function generateText(
     if (options.toolChoice) {
       request.tool_choice = mapToolChoiceToQwen(options.toolChoice);
     }
+    if (options.parallelToolCalls !== undefined) {
+      request.parallel_tool_calls = options.parallelToolCalls;
+    }
   }
 
   if (options.responseFormat) {
@@ -38,6 +42,16 @@ export async function generateText(
     if (responseFormat) {
       request.response_format = responseFormat;
     }
+  }
+
+  if (options.frequencyPenalty !== undefined) {
+    request.frequency_penalty = options.frequencyPenalty;
+  }
+  if (options.presencePenalty !== undefined) {
+    request.presence_penalty = options.presencePenalty;
+  }
+  if (options.seed !== undefined) {
+    request.seed = options.seed;
   }
 
   const response = await makeAPICall(baseURL, config, request);

@@ -37,6 +37,7 @@ export type {
   ToolCall,
   ResponseFormat,
   JsonSchema,
+  Logprobs,
 } from './types';
 
 // Re-export provider types for convenience
@@ -48,6 +49,7 @@ export type {
   EmbeddingProvider,
   RetryConfig,
   EmbeddingUsage,
+  LogprobToken,
 } from '@dysporium-sdk/provider';
 
 export { DEFAULT_RETRY_CONFIG } from '@dysporium-sdk/provider';

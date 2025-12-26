@@ -38,6 +38,8 @@ export type {
   EmbeddingProvider,
   RetryConfig,
   EmbeddingUsage,
+  Logprobs,
+  LogprobToken,
 } from '@dysporium-sdk/core';
 
 // OpenAI-specific exports

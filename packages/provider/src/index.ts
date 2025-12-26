@@ -19,6 +19,8 @@ export type {
   EmbeddingResult,
   EmbeddingUsage,
   SingleEmbeddingResult,
+  Logprobs,
+  LogprobToken,
 } from './types';
 
 export { DEFAULT_RETRY_CONFIG } from './types';

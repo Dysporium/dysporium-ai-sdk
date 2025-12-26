@@ -1,5 +1,16 @@
 # @dysporium-sdk/core
 
+## 2.0.0
+
+### Major Changes
+
+- update for more cases
+
+### Patch Changes
+
+- Updated dependencies
+  - @dysporium-sdk/provider@2.0.0
+
 ## 1.0.0
 
 ### Major Changes

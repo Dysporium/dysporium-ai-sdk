@@ -47,6 +47,13 @@ export interface QwenRequest {
   tools?: QwenTool[];
   tool_choice?: 'auto' | 'none' | 'required' | { type: 'function'; function: { name: string } };
   response_format?: { type: 'json_object' | 'text' };
+
+  frequency_penalty?: number;
+  presence_penalty?: number;
+  repetition_penalty?: number; // Qwen-specific: 1.0 = no penalty
+  seed?: number;
+  enable_search?: boolean; // Qwen-specific: enable internet search
+  parallel_tool_calls?: boolean;
 }
 
 // ===== Mapping Functions =====

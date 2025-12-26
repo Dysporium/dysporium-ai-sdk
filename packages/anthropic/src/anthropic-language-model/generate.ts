@@ -22,6 +22,7 @@ export async function generateText(
     max_tokens: options.maxTokens || 4096,
     temperature: options.temperature,
     top_p: options.topP,
+    top_k: options.topK,
     stop_sequences: options.stopSequences,
     stream: false,
   };
@@ -35,6 +36,17 @@ export async function generateText(
 
   if (options.responseFormat) {
     mapResponseFormatToAnthropic(options.responseFormat);
+  }
+
+  if (options.user) {
+    request.metadata = { user_id: options.user };
+  }
+
+  if (options.thinking) {
+    request.thinking = {
+      type: 'enabled',
+      budget_tokens: options.thinking.budgetTokens,
+    };
   }
 
   const response = await makeAPICall(baseURL, config, request);
