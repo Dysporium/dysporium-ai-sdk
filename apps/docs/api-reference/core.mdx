@@ -25,9 +25,22 @@ function generateText(options: GenerateTextOptions): Promise<GenerateTextResult>
 - `options.system` - System message
 - `options.maxTokens` - Maximum tokens to generate
 - `options.temperature` - Sampling temperature (0-2)
+- `options.topP` - Nucleus sampling (0-1)
+- `options.topK` - Top-k sampling (Anthropic, Qwen)
+- `options.stopSequences` - Array of stop sequences
 - `options.tools` - Array of tools for function calling
 - `options.toolChoice` - Control tool calling behavior
+- `options.parallelToolCalls` - Allow parallel tool execution (OpenAI, Qwen)
 - `options.responseFormat` - Structured output format
+- `options.frequencyPenalty` - Reduce repetition (-2.0 to 2.0, OpenAI, Qwen)
+- `options.presencePenalty` - Encourage new topics (-2.0 to 2.0, OpenAI, Qwen)
+- `options.seed` - Seed for reproducible outputs (OpenAI, Qwen)
+- `options.user` - End-user ID for abuse detection
+- `options.logprobs` - Return log probabilities (OpenAI)
+- `options.topLogprobs` - Number of top logprobs per token (0-20, OpenAI)
+- `options.reasoningEffort` - Reasoning effort level (OpenAI o-series)
+- `options.maxCompletionTokens` - Max completion tokens for o-series (OpenAI)
+- `options.thinking` - Extended thinking config (Anthropic Claude 3.5+)
 
 **Returns:** Promise resolving to `GenerateTextResult`
 

@@ -91,6 +91,9 @@ const openai = createOpenAI({
 const result = await generateText({
   model: openai('gpt-4o'),
   messages: [{ role: 'user', content: 'Explain quantum computing' }],
+  temperature: 0.7,
+  maxTokens: 500,
+  seed: 42, // Reproducible outputs
 })
 
 console.log(result.text)
@@ -108,7 +111,12 @@ const anthropic = createAnthropic({
 
 const result = await generateText({
   model: anthropic('claude-sonnet-4-5'),
-  messages: [{ role: 'user', content: 'Hello!' }],
+  messages: [{ role: 'user', content: 'Solve this step by step' }],
+  thinking: {
+    type: 'enabled',
+    budgetTokens: 10000, // Extended thinking
+  },
+  topK: 40, // Top-k sampling
 })
 
 console.log(result.text)`,
@@ -125,7 +133,10 @@ const qwen = createQwen({
 
 const result = await generateText({
   model: qwen('qwen2.5-72b-instruct'),
-  messages: [{ role: 'user', content: 'Hello!' }],
+  messages: [{ role: 'user', content: 'Write a creative story' }],
+  temperature: 0.8,
+  topK: 50, // Top-k sampling
+  frequencyPenalty: 0.5, // Reduce repetition
 })
 
 console.log(result.text)`,
@@ -147,6 +158,30 @@ const result = await embed({
 
 console.log(result.embedding) // [0.123, -0.456, ...]
 console.log(result.embedding.length) // 1536 dimensions`,
+    },
+    {
+      id: 'advanced',
+      label: 'Advanced',
+      filename: 'advanced.ts',
+      content: `import { createOpenAI, generateText } from '@dysporium-sdk/openai'
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+
+const result = await generateText({
+  model: openai('gpt-4o'),
+  prompt: 'Write a creative story',
+  temperature: 0.8,
+  frequencyPenalty: 0.5, // Reduce repetition
+  presencePenalty: 0.3,   // Encourage new topics
+  seed: 42,               // Reproducible outputs
+  user: 'user-123',       // User tracking
+  maxTokens: 1000,
+})
+
+console.log(result.text)
+console.log(result.systemFingerprint) // Model version`,
     },
   ] as Array<CodeExample>,
 } as const

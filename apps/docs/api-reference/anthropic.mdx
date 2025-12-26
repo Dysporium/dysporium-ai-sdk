@@ -177,8 +177,27 @@ This means you can install just `@dysporium-sdk/anthropic` and get everything yo
 ## Features
 
 - **Full Claude 4.5 Support** - Latest models with extended thinking capabilities
+- **Extended Thinking** - Enable extended thinking for complex problem-solving
+- **Top-K Sampling** - Control token selection with top-k sampling
 - **Streaming** - Real-time streaming responses
 - **Tool Calling** - Function calling support
 - **Automatic Retries** - Built-in retry logic with exponential backoff
 - **Type Safety** - Full TypeScript support
+
+## Extended Thinking
+
+Claude 3.5+ models support extended thinking for complex problem-solving:
+
+```typescript
+const result = await generateText({
+  model: anthropic('claude-3-5-sonnet-20241022'),
+  prompt: 'Solve this complex problem step by step',
+  thinking: {
+    type: 'enabled',
+    budgetTokens: 10000,  // Token budget for thinking process
+  },
+});
+```
+
+The extended thinking feature allows Claude to work through problems internally before providing a response, leading to better reasoning on complex tasks.
 

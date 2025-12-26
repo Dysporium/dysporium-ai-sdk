@@ -210,3 +210,42 @@ import {
 
 This means you can install just `@dysporium-sdk/openai` and get everything you need.
 
+## Advanced Parameters
+
+OpenAI supports extensive generation parameters:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4o'),
+  prompt: 'Write a creative story',
+  temperature: 0.8,
+  frequencyPenalty: 0.5,  // Reduce repetition
+  presencePenalty: 0.3,    // Encourage new topics
+  seed: 42,               // Reproducible outputs
+  user: 'user-123',       // User tracking
+  logprobs: true,         // Get token probabilities
+  topLogprobs: 5,         // Top 5 probabilities per token
+  parallelToolCalls: true, // Parallel tool execution
+});
+
+// Access log probabilities
+if (result.logprobs) {
+  result.logprobs.content?.forEach(token => {
+    console.log(`Token: ${token.token}, Logprob: ${token.logprob}`);
+  });
+}
+```
+
+### Reasoning Models (o-series)
+
+For OpenAI's reasoning models (o1, o3, o4-mini), use specialized parameters:
+
+```typescript
+const result = await generateText({
+  model: openai('o1-preview'),
+  prompt: 'Solve this math problem',
+  reasoningEffort: 'high',      // 'low' | 'medium' | 'high'
+  maxCompletionTokens: 2000,    // Used instead of maxTokens
+});
+```
+

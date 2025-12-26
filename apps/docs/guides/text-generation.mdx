@@ -88,6 +88,132 @@ maxTokens: 500
 maxTokens: 2000
 ```
 
+## Advanced Parameters
+
+### Diversity Controls
+
+Control repetition and topic diversity:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-5.1'),
+  prompt: 'Write a creative story',
+  frequencyPenalty: 0.5,  // Reduce repetition (-2.0 to 2.0)
+  presencePenalty: 0.3,    // Encourage new topics (-2.0 to 2.0)
+});
+```
+
+- **frequencyPenalty**: Reduces repetition of tokens. Higher values = less repetition
+- **presencePenalty**: Encourages new topics. Higher values = more diverse topics
+
+### Top-K Sampling
+
+Use top-k sampling (Anthropic, Qwen):
+
+```typescript
+import { createAnthropic } from '@dysporium-sdk/anthropic';
+
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const result = await generateText({
+  model: anthropic('claude-3-5-sonnet-20241022'),
+  prompt: 'Explain quantum computing',
+  topK: 40,  // Consider top 40 tokens
+});
+```
+
+### Reproducible Outputs
+
+Use a seed for reproducible outputs:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-5.1'),
+  prompt: 'Write a haiku',
+  seed: 42,  // Same seed = same output
+});
+```
+
+### User Tracking
+
+Track end-user IDs for abuse detection:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-5.1'),
+  prompt: 'Hello',
+  user: 'user-123',  // End-user identifier
+});
+```
+
+### Parallel Tool Calls
+
+Allow parallel function execution (OpenAI, Qwen):
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-5.1'),
+  prompt: 'Get weather and calculate 2+2',
+  tools: [weatherTool, calculatorTool],
+  parallelToolCalls: true,  // Execute tools in parallel
+});
+```
+
+### Extended Thinking (Anthropic)
+
+Enable extended thinking for Claude 3.5+ models:
+
+```typescript
+import { createAnthropic } from '@dysporium-sdk/anthropic';
+
+const anthropic = createAnthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+const result = await generateText({
+  model: anthropic('claude-3-5-sonnet-20241022'),
+  prompt: 'Solve this complex problem step by step',
+  thinking: {
+    type: 'enabled',
+    budgetTokens: 10000,  // Token budget for thinking
+  },
+});
+```
+
+### Reasoning Models (OpenAI)
+
+Configure reasoning effort for o-series models:
+
+```typescript
+const result = await generateText({
+  model: openai('o1-preview'),
+  prompt: 'Solve this math problem',
+  reasoningEffort: 'high',  // 'low' | 'medium' | 'high'
+  maxCompletionTokens: 2000,  // Used instead of maxTokens
+});
+```
+
+### Log Probabilities (OpenAI)
+
+Get token probabilities:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-5.1'),
+  prompt: 'Hello',
+  logprobs: true,      // Return log probabilities
+  topLogprobs: 5,      // Top 5 probabilities per token
+});
+
+if (result.logprobs) {
+  result.logprobs.content?.forEach(token => {
+    console.log(`Token: ${token.token}, Logprob: ${token.logprob}`);
+  });
+}
+```
+
 ## Error Handling
 
 Handle errors gracefully:

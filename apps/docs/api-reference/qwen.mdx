@@ -219,8 +219,27 @@ This means you can install just `@dysporium-sdk/qwen` and get everything you nee
 ## Features
 
 - **Full Qwen Support** - Latest Qwen 3, Qwen 2.5, and Qwen 2.0 models
+- **Top-K Sampling** - Control token selection with top-k sampling
+- **Diversity Controls** - Frequency and presence penalties for better outputs
 - **Streaming** - Real-time streaming responses
-- **Tool Calling** - Function calling support
+- **Tool Calling** - Function calling support with parallel execution
 - **Automatic Retries** - Built-in retry logic with exponential backoff
 - **Type Safety** - Full TypeScript support
+
+## Advanced Parameters
+
+Qwen supports advanced generation parameters:
+
+```typescript
+const result = await generateText({
+  model: qwen('qwen2.5-72b-instruct'),
+  prompt: 'Write a creative story',
+  temperature: 0.8,
+  topK: 50,              // Top-k sampling
+  frequencyPenalty: 0.5, // Reduce repetition
+  presencePenalty: 0.3,  // Encourage new topics
+  seed: 42,             // Reproducible outputs
+  parallelToolCalls: true, // Parallel tool execution
+});
+```
 
