@@ -4,10 +4,11 @@
   "commit": false,
   "fixed": [],
   "linked": [
-    ["@dysporium-sdk/core", "@dysporium-sdk/provider", "@dysporium-sdk/openai", "@dysporium-sdk/anthropic", "@dysporium-sdk/qwen"]
+    ["@dysporium-sdk/core", "@dysporium-sdk/provider", "@dysporium-sdk/openai", "@dysporium-sdk/anthropic", "@dysporium-sdk/qwen", "@dysporium-sdk/utils"]
   ],
   "access": "public",
-  "baseBranch": "main",
+  "baseBranch": "master",
   "updateInternalDependencies": "patch",
+  "onlyUpdatePeerDependentsWhenOutOfRange": true,
   "ignore": ["dysporium-sdk-docs", "dysporium-sdk-web"]
 }

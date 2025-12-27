@@ -1,6 +1,6 @@
 {
   "name": "@dysporium-sdk/qwen",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Qwen provider for Dysporium SDK",
   "type": "module",
   "main": "./dist/index.js",
@@ -38,6 +38,7 @@
   "dependencies": {
     "@dysporium-sdk/core": "workspace:*",
     "@dysporium-sdk/provider": "workspace:*",
+    "@dysporium-sdk/utils": "workspace:*",
     "zod": "^3.22.4"
   },
   "devDependencies": {

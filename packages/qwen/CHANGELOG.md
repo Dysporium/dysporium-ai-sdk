@@ -1,5 +1,19 @@
 # @dysporium-sdk/qwen
 
+## 3.0.0
+
+### Major Changes
+
+- add new utility functionalities
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @dysporium-sdk/utils@3.0.0
+  - @dysporium-sdk/core@3.0.0
+  - @dysporium-sdk/provider@3.0.0
+
 ## 2.0.0
 
 ### Major Changes

@@ -1,7 +1,7 @@
 {
-  "name": "@dysporium-sdk/anthropic",
+  "name": "@dysporium-sdk/utils",
   "version": "3.0.0",
-  "description": "Anthropic provider for Dysporium SDK",
+  "description": "Utility functions for Dysporium SDK - caching, cost tracking, middleware",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -22,24 +22,23 @@
   "keywords": [
     "ai",
     "sdk",
-    "anthropic",
-    "claude",
-    "llm"
+    "llm",
+    "utils",
+    "caching",
+    "cost-tracking",
+    "middleware"
   ],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Dysporium/dysporium-ai-sdk.git",
-    "directory": "packages/anthropic"
+    "directory": "packages/utils"
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "@dysporium-sdk/core": "workspace:*",
-    "@dysporium-sdk/provider": "workspace:*",
-    "@dysporium-sdk/utils": "workspace:*",
-    "zod": "^3.22.4"
+    "@dysporium-sdk/provider": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

@@ -1,5 +1,11 @@
 # @dysporium-sdk/provider
 
+## 3.0.0
+
+### Major Changes
+
+- add new utility functionalities
+
 ## 2.0.0
 
 ### Major Changes

@@ -53,3 +53,25 @@ export type {
 } from '@dysporium-sdk/provider';
 
 export { DEFAULT_RETRY_CONFIG } from '@dysporium-sdk/provider';
+
+export {
+  countTokens,
+  countTokensWithTools,
+  estimateTokens,
+  estimateTokensApproximate,
+  estimateTokensOpenAI,
+  estimateTokensAnthropic,
+  estimateTokensQwen,
+  formatTokenCount,
+  formatTokenEstimate,
+  exceedsTokenLimit,
+  getTokenUsagePercentage,
+} from '@dysporium-sdk/utils';
+
+export type {
+  TokenCountingMethod,
+  TokenCountOptions,
+  TokenCountResult,
+  EstimateTokensOptions,
+  TokenEstimateResult,
+} from '@dysporium-sdk/utils';
