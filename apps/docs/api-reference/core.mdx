@@ -41,8 +41,16 @@ function generateText(options: GenerateTextOptions): Promise<GenerateTextResult>
 - `options.reasoningEffort` - Reasoning effort level (OpenAI o-series)
 - `options.maxCompletionTokens` - Max completion tokens for o-series (OpenAI)
 - `options.thinking` - Extended thinking config (Anthropic Claude 3.5+)
+- `options.estimateTokens` - Estimate tokens before making request (returns `estimatedTokens` in result)
 
 **Returns:** Promise resolving to `GenerateTextResult`
+
+**Result includes:**
+- `result.text` - Generated text
+- `result.usage` - Token usage information
+- `result.estimatedTokens` - Estimated token counts (if `estimateTokens` was enabled)
+- `result.toolCalls` - Tool calls if any
+- `result.logprobs` - Log probabilities if requested
 
 **Example:**
 

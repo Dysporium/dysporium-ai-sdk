@@ -237,6 +237,24 @@ try {
 }
 ```
 
+## Token Estimation
+
+Estimate tokens before making requests:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-5.1'),
+  prompt: 'Hello',
+  estimateTokens: true, // Enable token estimation
+});
+
+console.log('Estimated input tokens:', result.estimatedTokens?.input);
+console.log('Estimated output tokens:', result.estimatedTokens?.output);
+console.log('Estimated total tokens:', result.estimatedTokens?.total);
+```
+
+For more advanced token counting, see the [Utilities Guide](/guides/utilities).
+
 ## Usage Information
 
 Access token usage:
@@ -257,4 +275,5 @@ console.log('Total tokens:', result.usage.totalTokens);
 - [Streaming Guide](/guides/streaming) - Stream responses in real-time
 - [Structured Output](/guides/structured-output) - Get JSON responses
 - [Tool Calling](/guides/tool-calling) - Add function calling
+- [Utilities Guide](/guides/utilities) - Token counting, deduplication, cost tracking
 

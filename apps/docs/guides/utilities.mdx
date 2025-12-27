@@ -1,0 +1,277 @@
+---
+title: Utilities
+description: Token counting, request deduplication, cost tracking, and more
+---
+
+The `@dysporium-sdk/utils` package provides powerful utilities for managing API requests, tracking costs, and optimizing performance.
+
+## Token Counting
+
+Estimate token counts before making requests to stay within model limits and optimize costs.
+
+### Basic Token Counting
+
+Count tokens in messages:
+
+```typescript
+import { countTokens } from '@dysporium-sdk/core';
+// or
+import { countTokens } from '@dysporium-sdk/utils';
+
+const messages = [
+  { role: 'user', content: 'Hello, how are you?' },
+  { role: 'assistant', content: 'I am doing well, thank you!' },
+];
+
+const result = countTokens(messages, {
+  method: 'openai', // 'approximate' | 'openai' | 'anthropic' | 'qwen'
+});
+
+console.log('Total tokens:', result.totalTokens);
+console.log('Message tokens:', result.messageTokens);
+console.log('System tokens:', result.systemTokens);
+```
+
+### Counting with Tools
+
+Include tool definitions in the count:
+
+```typescript
+import { countTokensWithTools } from '@dysporium-sdk/utils';
+
+const tools = [
+  {
+    name: 'calculator',
+    description: 'Perform calculations',
+    parameters: {
+      type: 'object',
+      properties: {
+        expression: { type: 'string' },
+      },
+    },
+  },
+];
+
+const result = countTokensWithTools(messages, tools, {
+  method: 'openai',
+  includeTools: true,
+});
+
+console.log('Tool tokens:', result.toolTokens);
+console.log('Total tokens:', result.totalTokens);
+```
+
+### Estimating Total Tokens
+
+Estimate tokens including potential output:
+
+```typescript
+import { estimateTokens } from '@dysporium-sdk/utils';
+
+const estimate = estimateTokens(messages, tools, {
+  method: 'openai',
+  includeOutputEstimate: true,
+  maxOutputTokens: 500,
+});
+
+console.log('Input tokens:', estimate.totalTokens);
+console.log('Estimated output:', estimate.estimatedOutputTokens);
+console.log('Total estimated:', estimate.totalEstimatedTokens);
+```
+
+### Automatic Token Estimation
+
+Enable automatic token estimation in `generateText`:
+
+```typescript
+import { generateText } from '@dysporium-sdk/core';
+import { createOpenAI } from '@dysporium-sdk/openai';
+
+const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const result = await generateText({
+  model: openai('gpt-4'),
+  messages: [{ role: 'user', content: 'Hello!' }],
+  estimateTokens: true, // Enable automatic estimation
+});
+
+console.log('Estimated tokens:', result.estimatedTokens);
+// { input: 5, output: 500, total: 505 }
+```
+
+### Provider-Specific Estimation
+
+Use provider-specific estimation methods for better accuracy:
+
+```typescript
+import {
+  estimateTokensOpenAI,
+  estimateTokensAnthropic,
+  estimateTokensQwen,
+} from '@dysporium-sdk/utils';
+
+// OpenAI-style estimation
+const openaiTokens = estimateTokensOpenAI('Hello, world!');
+
+// Anthropic-style estimation
+const anthropicTokens = estimateTokensAnthropic('Hello, world!');
+
+// Qwen-style estimation
+const qwenTokens = estimateTokensQwen('Hello, world!');
+```
+
+### Checking Token Limits
+
+Check if your request exceeds token limits:
+
+```typescript
+import { estimateTokens, exceedsTokenLimit, getTokenUsagePercentage } from '@dysporium-sdk/utils';
+
+const estimate = estimateTokens(messages, tools, {
+  method: 'openai',
+  includeOutputEstimate: true,
+  maxOutputTokens: 1000,
+});
+
+const maxTokens = 4096; // Model context window
+
+if (exceedsTokenLimit(estimate, maxTokens)) {
+  console.error('Request exceeds token limit!');
+}
+
+const usagePercent = getTokenUsagePercentage(estimate, maxTokens);
+console.log(`Using ${usagePercent.toFixed(1)}% of context window`);
+```
+
+## Request Deduplication
+
+Prevent duplicate API calls for identical requests using the `DeduplicationManager`.
+
+### Basic Usage
+
+```typescript
+import { DeduplicationManager } from '@dysporium-sdk/utils';
+import { generateText } from '@dysporium-sdk/core';
+import { createOpenAI } from '@dysporium-sdk/openai';
+
+const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const deduplicationManager = new DeduplicationManager({
+  enabled: true,
+  includeNonDeterministic: false, // Only dedupe based on messages/model
+});
+
+// Multiple identical requests will share the same promise
+const request1 = deduplicationManager.execute(
+  { messages: [{ role: 'user', content: 'Hello' }] },
+  'gpt-4',
+  'openai',
+  () => generateText({
+    model: openai('gpt-4'),
+    messages: [{ role: 'user', content: 'Hello' }],
+  })
+);
+
+const request2 = deduplicationManager.execute(
+  { messages: [{ role: 'user', content: 'Hello' }] },
+  'gpt-4',
+  'openai',
+  () => generateText({
+    model: openai('gpt-4'),
+    messages: [{ role: 'user', content: 'Hello' }],
+  })
+);
+
+// Both requests return the same result
+const [result1, result2] = await Promise.all([request1, request2]);
+// result1 === result2 (same promise)
+```
+
+### Configuration
+
+```typescript
+const manager = new DeduplicationManager({
+  enabled: true,
+  maxPendingTime: 60000, // Remove stale requests after 1 minute
+  includeNonDeterministic: false, // Exclude temperature, seed, etc.
+});
+
+// Update configuration
+manager.updateConfig({
+  maxPendingTime: 120000, // 2 minutes
+});
+```
+
+### Statistics
+
+Track deduplication effectiveness:
+
+```typescript
+import { formatDeduplicationStats, isDeduplicationEffective } from '@dysporium-sdk/utils';
+
+const stats = manager.getStats();
+console.log(formatDeduplicationStats(stats));
+
+if (isDeduplicationEffective(stats, 0.1)) {
+  console.log('Deduplication is working well!');
+}
+```
+
+## Cost Tracking
+
+Track API costs across requests:
+
+```typescript
+import { CostTracker, calculateCost } from '@dysporium-sdk/utils';
+
+const tracker = new CostTracker();
+
+// Track a request
+const result = await generateText({
+  model: openai('gpt-4'),
+  messages: [{ role: 'user', content: 'Hello' }],
+});
+
+tracker.record({
+  provider: 'openai',
+  model: 'gpt-4',
+  inputTokens: result.usage.inputTokens,
+  outputTokens: result.usage.outputTokens,
+});
+
+// Get cost summary
+const summary = tracker.getSummary();
+console.log('Total cost:', formatCost(summary.totalCost));
+console.log('By provider:', formatCostBreakdown(summary.byProvider));
+```
+
+## Response Caching
+
+Cache responses to reduce API calls:
+
+```typescript
+import { MemoryCache, createCacheMiddleware } from '@dysporium-sdk/utils';
+
+const cache = new MemoryCache({
+  maxSize: 100, // Maximum cached entries
+  ttl: 3600000, // 1 hour
+});
+
+// Check cache before making request
+const cacheKey = generateCacheKey(options, modelId, provider);
+const cached = cache.get(cacheKey);
+
+if (cached) {
+  return cached;
+}
+
+// Make request and cache result
+const result = await generateText(options);
+cache.set(cacheKey, result);
+```
+
+## Next Steps
+
+- [Text Generation Guide](/guides/text-generation) - Learn about text generation
+- [Error Handling](/guides/error-handling) - Handle errors gracefully
+- [API Reference](/api-reference/core) - Complete API documentation
+

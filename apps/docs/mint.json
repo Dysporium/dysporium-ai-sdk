@@ -43,7 +43,8 @@
         "api-reference/openai",
         "api-reference/anthropic",
         "api-reference/qwen",
-        "api-reference/provider"
+        "api-reference/provider",
+        "api-reference/utils"
       ]
     },
     {
@@ -54,7 +55,8 @@
         "guides/tool-calling",
         "guides/embeddings",
         "guides/structured-output",
-        "guides/error-handling"
+        "guides/error-handling",
+        "guides/utilities"
       ]
     },
     {

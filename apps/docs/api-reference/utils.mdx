@@ -1,0 +1,277 @@
+---
+title: Utils API Reference
+description: Complete API reference for @dysporium-sdk/utils
+---
+
+<Info>
+  This page documents the utilities package for token counting, request deduplication, cost tracking, caching, and hooks.
+</Info>
+
+## Token Counting
+
+### countTokens
+
+Count tokens in messages.
+
+```typescript
+function countTokens(
+  messages: Message[],
+  options?: TokenCountOptions
+): TokenCountResult
+```
+
+**Parameters:**
+- `messages` - Array of messages to count
+- `options.method` - Estimation method: `'approximate' | 'openai' | 'anthropic' | 'qwen'`
+- `options.includeSystemOverhead` - Include system message overhead (default: `true`)
+- `options.includeTools` - Include tool definitions (default: `true`)
+
+**Returns:** `TokenCountResult` with token counts and breakdown
+
+### countTokensWithTools
+
+Count tokens including tool definitions.
+
+```typescript
+function countTokensWithTools(
+  messages: Message[],
+  tools: Tool[] | undefined,
+  options?: TokenCountOptions
+): TokenCountResult
+```
+
+### estimateTokens
+
+Estimate tokens including potential output.
+
+```typescript
+function estimateTokens(
+  messages: Message[],
+  tools: Tool[] | undefined,
+  options?: EstimateTokensOptions
+): TokenEstimateResult
+```
+
+**Parameters:**
+- `options.includeOutputEstimate` - Include output token estimation (default: `false`)
+- `options.maxOutputTokens` - Maximum output tokens to estimate
+
+### Provider-Specific Estimators
+
+```typescript
+function estimateTokensOpenAI(text: string): number
+function estimateTokensAnthropic(text: string): number
+function estimateTokensQwen(text: string): number
+function estimateTokensApproximate(text: string): number
+```
+
+### Helpers
+
+```typescript
+function formatTokenCount(result: TokenCountResult): string
+function formatTokenEstimate(result: TokenEstimateResult): string
+function exceedsTokenLimit(result: TokenCountResult | TokenEstimateResult, limit: number): boolean
+function getTokenUsagePercentage(result: TokenCountResult | TokenEstimateResult, limit: number): number
+```
+
+## Request Deduplication
+
+### DeduplicationManager
+
+Manages request deduplication to prevent duplicate API calls.
+
+```typescript
+class DeduplicationManager {
+  constructor(config?: DeduplicationConfig)
+  
+  execute<T>(
+    options: GenerateOptions,
+    modelId: string,
+    provider: string,
+    requestFn: () => Promise<T>
+  ): Promise<T>
+  
+  getStats(): DeduplicationStats
+  clear(): void
+  updateConfig(config: Partial<DeduplicationConfig>): void
+  destroy(): void
+}
+```
+
+**Configuration:**
+- `enabled` - Enable deduplication (default: `true`)
+- `maxPendingTime` - Maximum time to keep pending requests (ms, default: `60000`)
+- `includeNonDeterministic` - Include non-deterministic params in key (default: `false`)
+- `keyGenerator` - Custom key generator function
+
+**Example:**
+
+```typescript
+const manager = new DeduplicationManager({
+  enabled: true,
+  includeNonDeterministic: false,
+});
+
+const result = await manager.execute(
+  options,
+  'gpt-4',
+  'openai',
+  () => generateText({ ... })
+);
+```
+
+### Helpers
+
+```typescript
+function generateDeduplicationKey(
+  options: GenerateOptions,
+  modelId: string,
+  provider: string,
+  includeNonDeterministic?: boolean
+): string
+
+function formatDeduplicationStats(stats: DeduplicationStats): string
+function isDeduplicationEffective(stats: DeduplicationStats, threshold?: number): boolean
+```
+
+## Cost Tracking
+
+### CostTracker
+
+Track API costs across requests.
+
+```typescript
+class CostTracker {
+  record(entry: CostTrackerEntry): void
+  getSummary(): CostSummary
+  clear(): void
+}
+```
+
+### Cost Calculation
+
+```typescript
+function calculateCost(
+  provider: string,
+  model: string,
+  inputTokens: number,
+  outputTokens: number
+): CostBreakdown
+
+function estimateCost(
+  provider: string,
+  model: string,
+  estimatedInputTokens: number,
+  estimatedOutputTokens: number
+): CostEstimate
+
+function calculateEmbeddingCost(
+  provider: string,
+  model: string,
+  tokens: number
+): number
+```
+
+### Helpers
+
+```typescript
+function formatCost(amount: number): string
+function formatCostBreakdown(breakdown: CostBreakdown): string
+function formatSummary(summary: CostSummary): string
+```
+
+## Response Caching
+
+### MemoryCache
+
+In-memory response cache.
+
+```typescript
+class MemoryCache<T> implements ResponseCache<T> {
+  constructor(options?: CacheOptions)
+  
+  get(key: string): T | undefined
+  set(key: string, value: T, ttl?: number): void
+  delete(key: string): void
+  clear(): void
+  getStats(): CacheStats
+}
+```
+
+### SemanticCache
+
+Semantic similarity-based cache.
+
+```typescript
+class SemanticCache<T> {
+  constructor(options?: SemanticCacheOptions)
+  
+  get(key: string, query: string, threshold?: number): T | undefined
+  set(key: string, value: T, text: string, ttl?: number): void
+  // ... other methods
+}
+```
+
+### Helpers
+
+```typescript
+function generateCacheKey(
+  options: GenerateOptions,
+  modelId: string,
+  provider: string
+): string
+
+function createCacheMiddleware<T>(
+  cache: ResponseCache<T>
+): BeforeRequestHook
+```
+
+## Hooks / Middleware
+
+### MiddlewareManager
+
+Manage request/response hooks.
+
+```typescript
+class MiddlewareManager {
+  use(hook: BeforeRequestHook | AfterResponseHook | OnErrorHook, type: 'beforeRequest' | 'afterResponse' | 'onError'): this
+  beforeRequest(hook: BeforeRequestHook): this
+  afterResponse(hook: AfterResponseHook): this
+  onError(hook: OnErrorHook): this
+  execute<T>(fn: () => Promise<T>, context: RequestContext): Promise<T>
+}
+```
+
+### Built-in Hooks
+
+```typescript
+function createLoggingHook(options?: {
+  logRequest?: boolean
+  logResponse?: boolean
+  logErrors?: boolean
+  logger?: (message: string, data?: unknown) => void
+}): MiddlewareConfig
+
+function createMetricsHook(collector: {
+  recordRequest: (provider: string, model: string) => void
+  recordResponse: (provider: string, model: string, duration: number, usage: Usage) => void
+  recordError: (provider: string, model: string, error: Error) => void
+}): MiddlewareConfig
+```
+
+## Types
+
+- `TokenCountOptions` - Options for token counting
+- `TokenCountResult` - Result of token counting
+- `EstimateTokensOptions` - Options for token estimation
+- `TokenEstimateResult` - Result of token estimation
+- `DeduplicationConfig` - Configuration for deduplication
+- `DeduplicationStats` - Statistics about deduplication
+- `CostBreakdown` - Breakdown of API costs
+- `CostSummary` - Summary of tracked costs
+- `CacheOptions` - Options for caching
+- `CacheStats` - Cache statistics
+- `RequestContext` - Context for request hooks
+- `ResponseContext` - Context for response hooks
+- `ErrorContext` - Context for error hooks
+
