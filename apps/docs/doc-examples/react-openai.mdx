@@ -1,0 +1,185 @@
+---
+title: React OpenAI Example
+description: React + Vite example using Dysporium SDK with OpenAI
+---
+
+A complete React application demonstrating how to use the Dysporium SDK with OpenAI in a modern React + Vite setup.
+
+## Features
+
+- ✅ Text generation with OpenAI GPT models
+- ✅ Real-time streaming responses
+- ✅ Token usage tracking
+- ✅ Token estimation
+- ✅ Error handling
+- ✅ Modern React with TypeScript
+
+## Getting Started
+
+### Installation
+
+```bash
+cd examples/react-openai
+pnpm install
+```
+
+### Running
+
+```bash
+pnpm dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+## Code Overview
+
+### Main Component
+
+The app demonstrates both regular generation and streaming:
+
+```typescript
+import { useState } from 'react'
+import { generateText, streamText } from '@dysporium-sdk/core'
+import { createOpenAI } from '@dysporium-sdk/openai'
+
+function App() {
+  const [apiKey, setApiKey] = useState('')
+  const [prompt, setPrompt] = useState('Write a haiku about programming')
+  const [response, setResponse] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleGenerate = async () => {
+    setLoading(true)
+    try {
+      const openai = createOpenAI({ apiKey })
+      
+      const result = await generateText({
+        model: openai('gpt-4'),
+        prompt,
+        estimateTokens: true,
+      })
+
+      setResponse(result.text)
+      setUsage(result.usage)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleStream = async () => {
+    setStreaming(true)
+    try {
+      const openai = createOpenAI({ apiKey })
+      
+      await streamText({
+        model: openai('gpt-4'),
+        prompt,
+        onChunk: (chunk) => {
+          if (chunk.type === 'text-delta') {
+            setResponse(prev => prev + chunk.textDelta)
+          }
+        },
+      })
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setStreaming(false)
+    }
+  }
+
+  return (
+    // ... UI components
+  )
+}
+```
+
+## Key Features
+
+### 1. Text Generation
+
+Generate complete responses with token estimation:
+
+```typescript
+const result = await generateText({
+  model: openai('gpt-4'),
+  prompt: 'Write a haiku about programming',
+  estimateTokens: true,
+})
+
+console.log(result.text)
+console.log(result.usage)
+console.log(result.estimatedTokens)
+```
+
+### 2. Streaming
+
+Stream responses in real-time:
+
+```typescript
+await streamText({
+  model: openai('gpt-4'),
+  prompt: 'Tell a story',
+  onChunk: (chunk) => {
+    if (chunk.type === 'text-delta') {
+      // Update UI with each chunk
+      setResponse(prev => prev + chunk.textDelta)
+    }
+  },
+})
+```
+
+### 3. Error Handling
+
+Handle errors gracefully:
+
+```typescript
+try {
+  const result = await generateText({ ... })
+} catch (err) {
+  if (err instanceof APIError) {
+    console.error('API error:', err.message)
+  } else {
+    console.error('Unknown error:', err)
+  }
+}
+```
+
+## Project Structure
+
+```
+react-openai/
+├── src/
+│   ├── App.tsx          # Main component with OpenAI integration
+│   ├── App.css          # Component styles
+│   ├── main.tsx         # React entry point
+│   └── index.css        # Global styles
+├── index.html           # HTML template
+├── vite.config.ts       # Vite configuration
+└── package.json         # Dependencies
+```
+
+## Dependencies
+
+The example uses:
+
+- `@dysporium-sdk/core` - Core SDK functionality
+- `@dysporium-sdk/openai` - OpenAI provider
+- `react` - React library
+- `vite` - Build tool and dev server
+
+## Next Steps
+
+- Try different models (gpt-3.5-turbo, gpt-4-turbo)
+- Add conversation history
+- Implement tool calling
+- Add cost tracking with `@dysporium-sdk/utils`
+- Use request deduplication for better performance
+
+## See Also
+
+- [Basic Usage Example](/doc-examples/basic-usage) - Simple SDK examples
+- [Chatbot Example](/doc-examples/chatbot) - Conversational AI example
+- [Text Generation Guide](/guides/text-generation) - Complete generation guide
+

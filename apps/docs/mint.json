@@ -63,6 +63,7 @@
       "group": "Examples",
       "pages": [
         "doc-examples/basic-usage",
+        "doc-examples/react-openai",
         "doc-examples/chatbot",
         "doc-examples/agent",
         "doc-examples/semantic-search"
