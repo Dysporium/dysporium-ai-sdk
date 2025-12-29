@@ -3,18 +3,34 @@ title: React OpenAI Example
 description: React + Vite example using Dysporium SDK with OpenAI
 ---
 
-A complete React application demonstrating how to use the Dysporium SDK with OpenAI in a modern React + Vite setup.
+<CardGroup cols={2}>
+  <Card
+    title="View Starter on GitHub"
+    icon="github"
+    href="https://github.com/Dysporium/dysporium-ai-sdk/tree/master/examples/react-openai"
+  >
+    Browse the complete source code and explore the example implementation
+  </Card>
+  <Card
+    title="Quick Start"
+    icon="rocket"
+    href="#getting-started"
+  >
+    Get up and running in minutes with the installation guide
+  </Card>
+</CardGroup>
 
-## Features
-
-- ✅ Text generation with OpenAI GPT models
-- ✅ Real-time streaming responses
-- ✅ Token usage tracking
-- ✅ Token estimation
-- ✅ Error handling
-- ✅ Modern React with TypeScript
+A ChatGPT-like interface built with React + Vite demonstrating how to use the Dysporium SDK with OpenAI. This example features a complete chat application with streaming responses, model selection, and a modern UI.
 
 ## Getting Started
+
+### Prerequisites
+
+Create a `.env` file in the `examples/react-openai` directory:
+
+```bash
+VITE_OPENAI_API_KEY=sk-your-api-key-here
+```
 
 ### Installation
 
@@ -31,151 +47,242 @@ pnpm dev
 
 Open `http://localhost:5173` in your browser.
 
-## Code Overview
+## Architecture Overview
 
-### Main Component
+The application uses a modular architecture with custom hooks, services, and components:
 
-The app demonstrates both regular generation and streaming:
+### Main App Component
+
+The `App` component orchestrates the chat interface:
 
 ```typescript
 import { useState } from 'react'
-import { generateText, streamText } from '@dysporium-sdk/core'
-import { createOpenAI } from '@dysporium-sdk/openai'
+import { useChat } from './hooks/useChat'
+import { useModel } from './hooks/useModel'
+import { Sidebar, EmptyState, MessagesList, ChatInput } from './components'
 
 function App() {
-  const [apiKey, setApiKey] = useState('')
-  const [prompt, setPrompt] = useState('Write a haiku about programming')
-  const [response, setResponse] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleGenerate = async () => {
-    setLoading(true)
-    try {
-      const openai = createOpenAI({ apiKey })
-      
-      const result = await generateText({
-        model: openai('gpt-4'),
-        prompt,
-        estimateTokens: true,
-      })
-
-      setResponse(result.text)
-      setUsage(result.usage)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleStream = async () => {
-    setStreaming(true)
-    try {
-      const openai = createOpenAI({ apiKey })
-      
-      await streamText({
-        model: openai('gpt-4'),
-        prompt,
-        onChunk: (chunk) => {
-          if (chunk.type === 'text-delta') {
-            setResponse(prev => prev + chunk.textDelta)
-          }
-        },
-      })
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setStreaming(false)
-    }
-  }
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { model, setModel } = useModel()
+  const { messages, input, streaming, error, sendMessage, setInput, clearChat } = useChat()
 
   return (
-    // ... UI components
+    <div className="flex h-screen w-screen">
+      <Sidebar isOpen={sidebarOpen} onNewChat={clearChat} hasMessages={messages.length > 0} />
+      <main className="flex-1 flex flex-col">
+        {messages.length === 0 ? (
+          <EmptyState onSuggestionClick={setInput} />
+        ) : (
+          <MessagesList messages={messages} streaming={streaming} />
+        )}
+        <ChatInput 
+          value={input} 
+          onChange={setInput} 
+          onSend={sendMessage} 
+          disabled={streaming}
+          selectedModel={model}
+          onModelChange={setModel}
+        />
+      </main>
+    </div>
   )
+}
+```
+
+### Streaming Chat Service
+
+The `streamChatResponse` service handles streaming with the Dysporium SDK:
+
+```typescript
+import { streamText } from '@dysporium-sdk/core'
+import { createOpenAI } from '@dysporium-sdk/openai'
+
+export async function streamChatResponse(options: StreamOptions): Promise<void> {
+  const { apiKey, modelId, messages, onChunk, onFinish, onError } = options
+
+  const openai = createOpenAI({ apiKey })
+  
+  await streamText({
+    model: openai(modelId),
+    messages: messages.map(m => ({ role: m.role, content: m.content })),
+    onChunk: (chunk) => {
+      if (chunk.type === 'text-delta') {
+        onChunk(chunk.textDelta)
+      }
+    },
+    onFinish: (result) => {
+      onFinish(result.text || '')
+    },
+  })
+}
+```
+
+### Custom Hooks
+
+#### useChat Hook
+
+Manages chat state and message handling:
+
+```typescript
+export function useChat() {
+  const [input, setInput] = useState('')
+  const { data: messages = [] } = useQuery<ChatMessage[]>({
+    queryKey: ['messages'],
+    initialData: [],
+  })
+
+  const mutation = useChatMutation({
+    modelId: model,
+    onError: (error) => setError(error.message),
+  })
+
+  const sendMessage = useCallback(async () => {
+    if (!input.trim() || mutation.isPending) return
+
+    const userMessage = createUserMessage(input)
+    queryClient.setQueryData<ChatMessage[]>(['messages'], (old = []) => [
+      ...old,
+      userMessage,
+    ])
+
+    mutation.mutate({ messages, userMessage })
+    setInput('')
+  }, [input, messages, mutation])
+
+  return { messages, input, streaming: mutation.isPending, sendMessage, setInput }
+}
+```
+
+#### useModel Hook
+
+Manages model selection with localStorage persistence:
+
+```typescript
+export function useModel() {
+  const [model, setModelState] = useState<ModelId>(() => {
+    const saved = localStorage.getItem('dysporium-selected-model')
+    return (saved as ModelId) || DEFAULT_MODEL
+  })
+
+  useEffect(() => {
+    localStorage.setItem('dysporium-selected-model', model)
+  }, [model])
+
+  return { model, setModel }
 }
 ```
 
 ## Key Features
 
-### 1. Text Generation
+### 1. Streaming Chat Responses
 
-Generate complete responses with token estimation:
-
-```typescript
-const result = await generateText({
-  model: openai('gpt-4'),
-  prompt: 'Write a haiku about programming',
-  estimateTokens: true,
-})
-
-console.log(result.text)
-console.log(result.usage)
-console.log(result.estimatedTokens)
-```
-
-### 2. Streaming
-
-Stream responses in real-time:
+The app uses `streamText` from the Dysporium SDK to stream responses in real-time:
 
 ```typescript
 await streamText({
-  model: openai('gpt-4'),
-  prompt: 'Tell a story',
+  model: openai(modelId),
+  messages: conversationHistory,
   onChunk: (chunk) => {
     if (chunk.type === 'text-delta') {
-      // Update UI with each chunk
-      setResponse(prev => prev + chunk.textDelta)
+      // Update message content as chunks arrive
+      updateMessageContent(messages, messageId, accumulatedContent)
     }
+  },
+  onFinish: (result) => {
+    // Finalize message with complete response
+    updateMessageContent(messages, messageId, result.text)
   },
 })
 ```
 
-### 3. Error Handling
+### 2. Model Selection
 
-Handle errors gracefully:
+Users can switch between multiple OpenAI models:
 
 ```typescript
-try {
-  const result = await generateText({ ... })
-} catch (err) {
-  if (err instanceof APIError) {
-    console.error('API error:', err.message)
-  } else {
-    console.error('Unknown error:', err)
+import { AVAILABLE_MODELS } from './constants/models'
+
+// Models include: GPT-5.1, GPT-5, GPT-4o, GPT-4 Turbo, etc.
+const selectedModel = AVAILABLE_MODELS.find(m => m.id === modelId)
+```
+
+### 3. React Query Integration
+
+Messages are managed with React Query for efficient state management:
+
+```typescript
+const { data: messages = [] } = useQuery<ChatMessage[]>({
+  queryKey: ['messages'],
+  initialData: [],
+})
+
+// Optimistic updates during streaming
+queryClient.setQueryData<ChatMessage[]>(['messages'], (old = []) => [
+  ...old,
+  newMessage,
+])
+```
+
+### 4. Error Handling
+
+Comprehensive error handling with user-friendly messages:
+
+```typescript
+const validateApiKey = (apiKey: string | undefined): string | null => {
+  if (!apiKey || !apiKey.trim()) {
+    return 'Please set VITE_OPENAI_API_KEY in your .env file'
   }
+  return null
 }
-```
-
-## Project Structure
-
-```
-react-openai/
-├── src/
-│   ├── App.tsx          # Main component with OpenAI integration
-│   ├── App.css          # Component styles
-│   ├── main.tsx         # React entry point
-│   └── index.css        # Global styles
-├── index.html           # HTML template
-├── vite.config.ts       # Vite configuration
-└── package.json         # Dependencies
 ```
 
 ## Dependencies
 
 The example uses:
 
-- `@dysporium-sdk/core` - Core SDK functionality
-- `@dysporium-sdk/openai` - OpenAI provider
-- `react` - React library
+- `@dysporium-sdk/core` - Core SDK functionality for streaming
+- `@dysporium-sdk/openai` - OpenAI provider integration
+- `@tanstack/react-query` - State management and data fetching
+- `react` & `react-dom` - React library
+- `lucide-react` - Icon library
 - `vite` - Build tool and dev server
+- `tailwindcss` - Utility-first CSS framework
+- `typescript` - Type safety
 
-## Next Steps
+## Component Details
 
-- Try different models (gpt-3.5-turbo, gpt-4-turbo)
-- Add conversation history
-- Implement tool calling
-- Add cost tracking with `@dysporium-sdk/utils`
-- Use request deduplication for better performance
+### ChatInput Component
+
+The `ChatInput` component provides a rich input experience with:
+- Auto-resizing textarea
+- Model selector dropdown
+- Attachment menu (file, image, audio)
+- Enter to send, Shift+Enter for new line
+
+### Message Component
+
+Displays individual messages with:
+- User/Assistant distinction with icons
+- Streaming indicator (typing dots)
+- Proper text wrapping and formatting
+
+### Sidebar Component
+
+Features include:
+- New chat button
+- Collapsible sidebar (persisted in localStorage)
+- Recent conversations list
+- Responsive mobile behavior
+
+## Environment Setup
+
+Create a `.env` file in the project root:
+
+```bash
+VITE_OPENAI_API_KEY=sk-your-api-key-here
+```
+
+The app will display a helpful error message if the API key is missing.
 
 ## See Also
 
